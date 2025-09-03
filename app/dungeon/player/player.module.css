@@ -1,0 +1,6 @@
+.player{
+    position: absolute;
+    /* background: white; */
+    background-repeat: no-repeat;
+    z-index: 5;
+}
