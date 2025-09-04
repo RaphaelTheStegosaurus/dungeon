@@ -3,4 +3,5 @@
     /* background: white; */
     background-repeat: no-repeat;
     z-index: 5;
+    transition: inset ease 0.5s;
 }
