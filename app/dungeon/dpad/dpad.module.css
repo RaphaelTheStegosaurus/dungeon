@@ -1,0 +1,48 @@
+.dpad {
+    z-index: 10;
+    position: absolute;
+    width: 200px;
+    aspect-ratio: 2/1;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(100, 100, 100, 0.5);
+    border-radius: 50%;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-areas:
+        "dpadLeft dpadUp dpadRight"
+        "dpadLeft dpadSelect dpadRight"
+        "dpadLeft dpadDown dpadRight";
+}
+
+.dpadButton {
+    background: transparent;
+    text-shadow: 0 0 5px white;
+    font-size: 2rem;
+    border: none;
+}
+
+.dpadUp {
+    grid-area: dpadUp;
+}
+
+.dpadRight {
+    grid-area: dpadRight;
+    border-radius: 0% 100% 100% 0%/ 50% 50% 50% 50%;
+}
+
+.dpadDown {
+    grid-area: dpadDown;
+}
+
+.dpadLeft {
+    grid-area: dpadLeft;
+    border-radius: 100% 0% 0% 100% / 50% 50% 50% 50%;
+}
+
+.dpadSelect {
+    grid-area: dpadSelect;
+    border-radius: 50%;
+    font-size: 4rem;
+}

@@ -1,14 +1,10 @@
 import { forwardRef } from "react";
 import style from "./player.module.css";
+import { playerOrientation, rectAttribute, SpritePosition } from "../types";
 interface Props {
-  attributes: {
-    x: number;
-    y: number;
-    height: number;
-    width: number;
-  };
-  orientation: "NORTH" | "SOUTH" | "EAST" | "WEST";
-  spriteSelector: 0 | 1;
+  attributes: rectAttribute;
+  orientation: playerOrientation;
+  spriteSelector: SpritePosition;
 }
 
 const Player = forwardRef(
