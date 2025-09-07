@@ -4,10 +4,17 @@ import style from "./dungeon.module.css";
 import Player from "./player/player";
 import Rooms from "./rooms/rooms";
 import Dpad from "./dpad/dpad";
-import { playerOrientation, rectAttribute, SpritePosition } from "./types";
+import {
+  Coord,
+  playerOrientation,
+  rectAttribute,
+  Sizes,
+  SpritePosition,
+} from "./types";
 export default function Dungeon() {
   //[c] React Variables
   const PLAYER_REF = useRef(null);
+  const DUNGEON_REF = useRef(null);
   const [playerAttributes, setplayerAttributes] = useState<rectAttribute>({
     x: 50,
     y: 20,
@@ -18,17 +25,15 @@ export default function Dungeon() {
     useState<playerOrientation>("SOUTH");
   const [playerSpritePosition, setplayerSpritePosition] =
     useState<SpritePosition>(1);
+  const [isPlayerMovement, setisPlayerMovement] = useState(false);
+  const [DirectionPlayer, setDirectionPlayer] = useState<Coord>({ x: 0, y: 0 });
+  const [doors, setdoors] = useState<rectAttribute[]>();
+  const [roomSize, setroomSize] = useState<Sizes>();
   //[c] Const
   const PLAYER_VELOCITY = 20;
   //[c] functions
-  const setMovement = (xCoord: number, yCoord: number) => {
-    const getCurrentX = playerAttributes.x + xCoord * PLAYER_VELOCITY;
-    const getCurrentY = playerAttributes.y + yCoord * PLAYER_VELOCITY;
-    setplayerAttributes({
-      ...playerAttributes,
-      x: getCurrentX,
-      y: getCurrentY,
-    });
+  const setCoordsDirection = (xCoord: number, yCoord: number) => {
+    setDirectionPlayer({ x: xCoord, y: yCoord });
   };
   const setOrientation = (_orientation: playerOrientation) => {
     setplayerOrientation(_orientation);
@@ -36,12 +41,34 @@ export default function Dungeon() {
   const getAction = () => {};
   //[c] React Functions
   useEffect(() => {
-    setplayerSpritePosition(playerSpritePosition === 0 ? 1 : 0);
-    return () => {};
-  }, [playerAttributes]);
+    let playerInterval: NodeJS.Timeout;
+    if (DUNGEON_REF.current) {
+      console.log(DUNGEON_REF.current);
+    }
+    if (isPlayerMovement) {
+      let getCurrentX = playerAttributes.x;
+      let getCurrentY = playerAttributes.y;
+      playerInterval = setInterval(() => {
+        getCurrentX += DirectionPlayer.x * PLAYER_VELOCITY;
+        getCurrentY += DirectionPlayer.y * PLAYER_VELOCITY;
+        // console.log(`x:${getCurrentX},y:${getCurrentY}`);
+        setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
+        setplayerAttributes({
+          ...playerAttributes,
+          x: getCurrentX,
+          y: getCurrentY,
+        });
+      }, 100);
+    }
+    return () => {
+      if (playerInterval) {
+        clearInterval(playerInterval);
+      }
+    };
+  }, [isPlayerMovement, DirectionPlayer]);
   // [c] RenderF
   return (
-    <div className={`${style.dungeon}`}>
+    <div ref={DUNGEON_REF} className={`${style.dungeon}`}>
       <Rooms room="room1" />
       <Player
         orientation={playerOrientation}
@@ -51,8 +78,9 @@ export default function Dungeon() {
       />
       <Dpad
         actionFunction={getAction}
-        movementFunction={setMovement}
+        movementFunction={setCoordsDirection}
         orientationFunction={setOrientation}
+        changeIsplayerMovement={setisPlayerMovement}
       />
     </div>
   );

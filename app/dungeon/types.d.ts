@@ -6,4 +6,6 @@ interface rectAttribute {
   height: number;
   width: number;
 }
-export type { rectAttribute, playerOrientation, SpritePosition };
+type Coord = Pick<rectAttribute, "x" | "y">;
+type Sizes = Pick<rectAttribute, "width" | "height">;
+export type { rectAttribute, playerOrientation, SpritePosition, Coord ,Sizes};

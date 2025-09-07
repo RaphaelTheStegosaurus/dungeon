@@ -21,6 +21,10 @@
     text-shadow: 0 0 5px white;
     font-size: 2rem;
     border: none;
+    user-select: none;
+    &:active{
+        background: white;
+    }
 }
 
 .dpadUp {
