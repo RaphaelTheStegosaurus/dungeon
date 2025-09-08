@@ -1,0 +1,7 @@
+.door {
+    position: absolute;
+    z-index: 5;
+    background: url("/door.png");
+    background-repeat: repeat-x;
+    background-size:  25% 100%;
+}

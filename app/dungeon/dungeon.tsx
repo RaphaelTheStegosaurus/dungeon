@@ -6,12 +6,23 @@ import Rooms from "./rooms/rooms";
 import Dpad from "./dpad/dpad";
 import {
   Coord,
+  DoorAttribute,
   playerOrientation,
   rectAttribute,
   Sizes,
   SpritePosition,
 } from "./types";
+import Doors from "./doors/doors";
 export default function Dungeon() {
+  //[c] Const
+  const PLAYER_VELOCITY = 20;
+  const WALLS_WIDTH = 20;
+  const DOOR_SAMPLE: rectAttribute = {
+    x: 300,
+    y: WALLS_WIDTH,
+    height: 20,
+    width: 75,
+  };
   //[c] React Variables
   const PLAYER_REF = useRef(null);
   const DUNGEON_REF = useRef(null);
@@ -27,11 +38,13 @@ export default function Dungeon() {
     useState<SpritePosition>(1);
   const [isPlayerMovement, setisPlayerMovement] = useState(false);
   const [DirectionPlayer, setDirectionPlayer] = useState<Coord>({ x: 0, y: 0 });
-  const [doors, setdoors] = useState<rectAttribute[]>(); //[ ]doors
+  const [doors, setdoors] = useState<DoorAttribute[]>([
+    { ...DOOR_SAMPLE, face: "door-face-top" },
+    { ...DOOR_SAMPLE, face: "door-face-bottom", y: 100 },
+    { ...DOOR_SAMPLE, face: "door-hided-bottom ", y: 500 },
+  ]); //[ ]door
   const [roomSize, setroomSize] = useState<Sizes>();
-  //[c] Const
-  const PLAYER_VELOCITY = 20;
-  const WALLS_WIDTH = 20;
+
   //[c] functions
   const setCoordsDirection = (xCoord: number, yCoord: number) => {
     setDirectionPlayer({ x: xCoord, y: yCoord });
@@ -53,6 +66,7 @@ export default function Dungeon() {
     // );
     return { x: constrainedX, y: constrainedY };
   };
+  const fixingDoors = () => {};
   //
   const getAction = () => {};
   //[c] React Functions
@@ -106,6 +120,7 @@ export default function Dungeon() {
         spriteSelector={playerSpritePosition}
         ref={PLAYER_REF}
       />
+      <Doors doors={doors} />
       <Dpad
         actionFunction={getAction}
         movementFunction={setCoordsDirection}

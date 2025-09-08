@@ -13,5 +13,16 @@ type DoorFace =
   | "door-face-top"
   | "door-face-bottom"
   | "door-hided-bottom ";
+interface DoorAttribute extends rectAttribute {
+  face: DoorFace;
+}
 type room = "room1" | "room2" | "room3" | "room4";
-export type { rectAttribute, playerOrientation, SpritePosition, Coord, Sizes };
+export type {
+  rectAttribute,
+  playerOrientation,
+  SpritePosition,
+  Coord,
+  Sizes,
+  DoorFace,
+  DoorAttribute,
+};

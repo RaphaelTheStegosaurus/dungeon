@@ -1,10 +1,24 @@
+import { DoorAttribute, rectAttribute } from "../types";
+import Door from "./door";
 
-type Props = {}
-
-const doors = (props: Props) => {
-  return (
-    <div>doors</div>
-  )
+interface Props {
+  doors: DoorAttribute[];
 }
 
-export default doors
+const Doors = ({ doors }: Props) => {
+  return (
+    <>
+      {doors.map((value, index) => {
+        let newDoorAttributes: rectAttribute = {
+          x: value.x,
+          y: value.y,
+          height: value.height,
+          width: value.width,
+        };
+        return <Door key={index} attributes={newDoorAttributes} />;
+      })}
+    </>
+  );
+};
+
+export default Doors;
