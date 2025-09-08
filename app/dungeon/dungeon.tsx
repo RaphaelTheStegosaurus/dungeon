@@ -31,6 +31,7 @@ export default function Dungeon() {
   const [roomSize, setroomSize] = useState<Sizes>();
   //[c] Const
   const PLAYER_VELOCITY = 20;
+  const WALLS_WIDTH = 20;
   //[c] functions
   const setCoordsDirection = (xCoord: number, yCoord: number) => {
     setDirectionPlayer({ x: xCoord, y: yCoord });
@@ -38,19 +39,18 @@ export default function Dungeon() {
   const setOrientation = (_orientation: playerOrientation) => {
     setplayerOrientation(_orientation);
   };
-  //[ ]
   const checkBoundaries = (newX: number, newY: number) => {
     if (!roomSize) return { x: newX, y: newY };
-
-    const minX = 0;
-    const minY = 0;
-    const maxX = roomSize.width - playerAttributes.width;
-    const maxY = roomSize.height - playerAttributes.height;
-
-    // Usa Math.min y Math.max para asegurar que el jugador no se salga de los límites
+    const minX = 0 + WALLS_WIDTH;
+    const minY = 0 + WALLS_WIDTH;
+    const maxX = roomSize.width - playerAttributes.width - WALLS_WIDTH;
+    const maxY = roomSize.height - playerAttributes.height - WALLS_WIDTH;
+    // console.log(` x:${minX}< p < ${maxX}, y: ${minY} < p < ${maxY}  `);
     const constrainedX = Math.min(Math.max(newX, minX), maxX);
     const constrainedY = Math.min(Math.max(newY, minY), maxY);
-
+    // console.log(
+    //   ` x:${minX}< ${constrainedX} < ${maxX}, y: ${minY} < ${constrainedY} < ${maxY}  `
+    // );
     return { x: constrainedX, y: constrainedY };
   };
   //
@@ -72,7 +72,7 @@ export default function Dungeon() {
       playerInterval = setInterval(() => {
         getCurrentX += DirectionPlayer.x * PLAYER_VELOCITY;
         getCurrentY += DirectionPlayer.y * PLAYER_VELOCITY;
-        console.log(`x:${getCurrentX},y:${getCurrentY}`);
+        // console.log(`x:${getCurrentX},y:${getCurrentY}`);
         const { x: constrainedX, y: constrainedY } = checkBoundaries(
           getCurrentX,
           getCurrentY
