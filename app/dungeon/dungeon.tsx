@@ -27,7 +27,7 @@ export default function Dungeon() {
     useState<SpritePosition>(1);
   const [isPlayerMovement, setisPlayerMovement] = useState(false);
   const [DirectionPlayer, setDirectionPlayer] = useState<Coord>({ x: 0, y: 0 });
-  const [doors, setdoors] = useState<rectAttribute[]>();
+  const [doors, setdoors] = useState<rectAttribute[]>(); //[ ]doors
   const [roomSize, setroomSize] = useState<Sizes>();
   //[c] Const
   const PLAYER_VELOCITY = 20;
@@ -38,26 +38,56 @@ export default function Dungeon() {
   const setOrientation = (_orientation: playerOrientation) => {
     setplayerOrientation(_orientation);
   };
+  //[ ]
+  const checkBoundaries = (newX: number, newY: number) => {
+    if (!roomSize) return { x: newX, y: newY };
+
+    const minX = 0;
+    const minY = 0;
+    const maxX = roomSize.width - playerAttributes.width;
+    const maxY = roomSize.height - playerAttributes.height;
+
+    // Usa Math.min y Math.max para asegurar que el jugador no se salga de los límites
+    const constrainedX = Math.min(Math.max(newX, minX), maxX);
+    const constrainedY = Math.min(Math.max(newY, minY), maxY);
+
+    return { x: constrainedX, y: constrainedY };
+  };
+  //
   const getAction = () => {};
   //[c] React Functions
   useEffect(() => {
-    let playerInterval: NodeJS.Timeout;
     if (DUNGEON_REF.current) {
-      console.log(DUNGEON_REF.current);
+      const RoomRect = (
+        DUNGEON_REF.current as HTMLDivElement
+      ).getBoundingClientRect();
+      setroomSize({ width: RoomRect.width, height: RoomRect.height });
     }
+  }, []);
+  useEffect(() => {
+    let playerInterval: NodeJS.Timeout;
     if (isPlayerMovement) {
       let getCurrentX = playerAttributes.x;
       let getCurrentY = playerAttributes.y;
       playerInterval = setInterval(() => {
         getCurrentX += DirectionPlayer.x * PLAYER_VELOCITY;
         getCurrentY += DirectionPlayer.y * PLAYER_VELOCITY;
-        // console.log(`x:${getCurrentX},y:${getCurrentY}`);
+        console.log(`x:${getCurrentX},y:${getCurrentY}`);
+        const { x: constrainedX, y: constrainedY } = checkBoundaries(
+          getCurrentX,
+          getCurrentY
+        );
         setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
-        setplayerAttributes({
-          ...playerAttributes,
-          x: getCurrentX,
-          y: getCurrentY,
-        });
+        // setplayerAttributes({
+        //   ...playerAttributes,
+        //   x: getCurrentX,
+        //   y: getCurrentY,
+        // });
+        setplayerAttributes((prev) => ({
+          ...prev,
+          x: constrainedX,
+          y: constrainedY,
+        }));
       }, 100);
     }
     return () => {
@@ -65,7 +95,7 @@ export default function Dungeon() {
         clearInterval(playerInterval);
       }
     };
-  }, [isPlayerMovement, DirectionPlayer]);
+  }, [isPlayerMovement, DirectionPlayer, playerAttributes, roomSize]);
   // [c] RenderF
   return (
     <div ref={DUNGEON_REF} className={`${style.dungeon}`}>
