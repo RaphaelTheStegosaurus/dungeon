@@ -12,7 +12,7 @@ type DoorFace =
   | "door-hided-top"
   | "door-face-top"
   | "door-face-bottom"
-  | "door-hided-bottom ";
+  | "door-hided-bottom";
 interface DoorAttribute extends rectAttribute {
   face: DoorFace;
 }
@@ -25,4 +25,5 @@ export type {
   Sizes,
   DoorFace,
   DoorAttribute,
+  room,
 };

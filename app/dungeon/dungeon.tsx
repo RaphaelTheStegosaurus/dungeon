@@ -9,6 +9,7 @@ import {
   DoorAttribute,
   playerOrientation,
   rectAttribute,
+  room,
   Sizes,
   SpritePosition,
 } from "./types";
@@ -18,14 +19,14 @@ export default function Dungeon() {
   const PLAYER_VELOCITY = 20;
   const WALLS_WIDTH = 20;
   const DOOR_SAMPLE: rectAttribute = {
-    x: 300,
-    y: WALLS_WIDTH,
+    x: 0,
+    y: 0,
     height: 20,
     width: 75,
   };
   //[c] React Variables
-  const PLAYER_REF = useRef(null);
-  const DUNGEON_REF = useRef(null);
+  const PLAYER_REF = useRef<HTMLDivElement>(null);
+  const DUNGEON_REF = useRef<HTMLDivElement>(null);
   const [playerAttributes, setplayerAttributes] = useState<rectAttribute>({
     x: 50,
     y: 20,
@@ -39,12 +40,12 @@ export default function Dungeon() {
   const [isPlayerMovement, setisPlayerMovement] = useState(false);
   const [DirectionPlayer, setDirectionPlayer] = useState<Coord>({ x: 0, y: 0 });
   const [doors, setdoors] = useState<DoorAttribute[]>([
-    { ...DOOR_SAMPLE, face: "door-face-top" },
-    { ...DOOR_SAMPLE, face: "door-face-bottom", y: 100 },
-    { ...DOOR_SAMPLE, face: "door-hided-bottom ", y: 500 },
-  ]); //[ ]door
-  const [roomSize, setroomSize] = useState<Sizes>();
-
+    { ...DOOR_SAMPLE, face: "door-face-bottom" },
+    { ...DOOR_SAMPLE, face: "door-hided-bottom" },
+    { ...DOOR_SAMPLE, face: "door-hided-bottom" },
+  ]);
+  const [roomSize, setroomSize] = useState<Sizes | null>(null);
+  const [currentRoom, setcurrentRoom] = useState<room>("room1");
   //[c] functions
   const setCoordsDirection = (xCoord: number, yCoord: number) => {
     setDirectionPlayer({ x: xCoord, y: yCoord });
@@ -52,32 +53,60 @@ export default function Dungeon() {
   const setOrientation = (_orientation: playerOrientation) => {
     setplayerOrientation(_orientation);
   };
-  const checkBoundaries = (newX: number, newY: number) => {
+  const checkBoundaries = (newX: number, newY: number): Coord => {
     if (!roomSize) return { x: newX, y: newY };
     const minX = 0 + WALLS_WIDTH;
     const minY = 0 + WALLS_WIDTH;
     const maxX = roomSize.width - playerAttributes.width - WALLS_WIDTH;
     const maxY = roomSize.height - playerAttributes.height - WALLS_WIDTH;
-    // console.log(` x:${minX}< p < ${maxX}, y: ${minY} < p < ${maxY}  `);
     const constrainedX = Math.min(Math.max(newX, minX), maxX);
     const constrainedY = Math.min(Math.max(newY, minY), maxY);
-    // console.log(
-    //   ` x:${minX}< ${constrainedX} < ${maxX}, y: ${minY} < ${constrainedY} < ${maxY}  `
-    // );
     return { x: constrainedX, y: constrainedY };
   };
-  const fixingDoors = () => {};
-  //
   const getAction = () => {};
   //[c] React Functions
+  // useEffect para obtener el tamaño del contenedor
   useEffect(() => {
     if (DUNGEON_REF.current) {
-      const RoomRect = (
-        DUNGEON_REF.current as HTMLDivElement
-      ).getBoundingClientRect();
+      const RoomRect = DUNGEON_REF.current.getBoundingClientRect();
       setroomSize({ width: RoomRect.width, height: RoomRect.height });
     }
   }, []);
+
+  // useEffect para posicionar las puertas cuando cambie el tamaño de la habitación o la habitación actual
+  useEffect(() => {
+    if (roomSize) {
+      const newDoors = doors.map((door) => {
+        let newY: number;
+        let newX: number = roomSize.width / 2 - door.width / 2;
+        switch (door.face) {
+          case "door-hided-top":
+            newY = -door.height; // Fuera de la pantalla por arriba
+            break;
+          case "door-face-top":
+            newY = WALLS_WIDTH; // En el borde superior
+            break;
+          case "door-face-bottom":
+            newY = roomSize.height - door.height - WALLS_WIDTH; // En el borde inferior
+            break;
+          case "door-hided-bottom":
+            newY = roomSize.height + door.height; // Fuera de la pantalla por abajo
+            break;
+          default:
+            newY = door.y;
+            break;
+        }
+        return {
+          ...door,
+          y: newY,
+          x: newX,
+        };
+      });
+      setdoors(newDoors);
+    }
+  }, [roomSize, currentRoom]);
+
+  // useEffect para el movimiento del jugador
   useEffect(() => {
     let playerInterval: NodeJS.Timeout;
     if (isPlayerMovement) {
@@ -86,17 +115,11 @@ export default function Dungeon() {
       playerInterval = setInterval(() => {
         getCurrentX += DirectionPlayer.x * PLAYER_VELOCITY;
         getCurrentY += DirectionPlayer.y * PLAYER_VELOCITY;
-        // console.log(`x:${getCurrentX},y:${getCurrentY}`);
         const { x: constrainedX, y: constrainedY } = checkBoundaries(
           getCurrentX,
           getCurrentY
         );
         setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
-        // setplayerAttributes({
-        //   ...playerAttributes,
-        //   x: getCurrentX,
-        //   y: getCurrentY,
-        // });
         setplayerAttributes((prev) => ({
           ...prev,
           x: constrainedX,
@@ -110,10 +133,11 @@ export default function Dungeon() {
       }
     };
   }, [isPlayerMovement, DirectionPlayer, playerAttributes, roomSize]);
+
   // [c] RenderF
   return (
     <div ref={DUNGEON_REF} className={`${style.dungeon}`}>
-      <Rooms room="room1" />
+      <Rooms room={currentRoom} />
       <Player
         orientation={playerOrientation}
         attributes={playerAttributes}
