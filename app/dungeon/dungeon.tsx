@@ -65,7 +65,6 @@ export default function Dungeon() {
   };
   const getAction = () => {};
   //[c] React Functions
-  // useEffect para obtener el tamaño del contenedor
   useEffect(() => {
     if (DUNGEON_REF.current) {
       const RoomRect = DUNGEON_REF.current.getBoundingClientRect();
@@ -73,7 +72,6 @@ export default function Dungeon() {
     }
   }, []);
 
-  // useEffect para posicionar las puertas cuando cambie el tamaño de la habitación o la habitación actual
   useEffect(() => {
     if (roomSize) {
       const newDoors = doors.map((door) => {
@@ -81,16 +79,16 @@ export default function Dungeon() {
         let newX: number = roomSize.width / 2 - door.width / 2;
         switch (door.face) {
           case "door-hided-top":
-            newY = -door.height; // Fuera de la pantalla por arriba
+            newY = -door.height;
             break;
           case "door-face-top":
-            newY = WALLS_WIDTH; // En el borde superior
+            newY = WALLS_WIDTH; 
             break;
           case "door-face-bottom":
-            newY = roomSize.height - door.height - WALLS_WIDTH; // En el borde inferior
+            newY = roomSize.height - door.height - WALLS_WIDTH; 
             break;
           case "door-hided-bottom":
-            newY = roomSize.height + door.height; // Fuera de la pantalla por abajo
+            newY = roomSize.height + door.height; 
             break;
           default:
             newY = door.y;
@@ -106,7 +104,6 @@ export default function Dungeon() {
     }
   }, [roomSize, currentRoom]);
 
-  // useEffect para el movimiento del jugador
   useEffect(() => {
     let playerInterval: NodeJS.Timeout;
     if (isPlayerMovement) {
@@ -134,7 +131,7 @@ export default function Dungeon() {
     };
   }, [isPlayerMovement, DirectionPlayer, playerAttributes, roomSize]);
 
-  // [c] RenderF
+  // [c] Render
   return (
     <div ref={DUNGEON_REF} className={`${style.dungeon}`}>
       <Rooms room={currentRoom} />
