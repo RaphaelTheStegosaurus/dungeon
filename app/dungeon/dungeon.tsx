@@ -7,9 +7,11 @@ import Dpad from "./dpad/dpad";
 import {
   Coord,
   DoorAttribute,
+  DoorFace,
   playerOrientation,
   rectAttribute,
   room,
+  RoomDoorFaces,
   Sizes,
   SpritePosition,
 } from "./types";
@@ -23,6 +25,12 @@ export default function Dungeon() {
     y: 0,
     height: 20,
     width: 75,
+  };
+  const SETS_OF_FACES_BY_ROOM: RoomDoorFaces = {
+    room1: ["door-face-bottom", "door-hided-bottom", "door-hided-bottom"],
+    room2: ["door-face-top", "door-face-bottom", "door-hided-bottom"],
+    room3: ["door-hided-top", "door-face-top", "door-face-bottom"],
+    room4: ["door-hided-top", "door-hided-top", "door-face-top"],
   };
   //[c] React Variables
   const PLAYER_REF = useRef<HTMLDivElement>(null);
@@ -39,13 +47,21 @@ export default function Dungeon() {
     useState<SpritePosition>(1);
   const [isPlayerMovement, setisPlayerMovement] = useState(false);
   const [DirectionPlayer, setDirectionPlayer] = useState<Coord>({ x: 0, y: 0 });
-  const [doors, setdoors] = useState<DoorAttribute[]>([
-    { ...DOOR_SAMPLE, face: "door-face-bottom" },
-    { ...DOOR_SAMPLE, face: "door-hided-bottom" },
-    { ...DOOR_SAMPLE, face: "door-hided-bottom" },
-  ]);
-  const [roomSize, setroomSize] = useState<Sizes | null>(null);
+
   const [currentRoom, setcurrentRoom] = useState<room>("room1");
+
+  // const [doors, setdoors] = useState<DoorAttribute[]>([
+  //   { ...DOOR_SAMPLE, face: "door-face-bottom" },
+  //   { ...DOOR_SAMPLE, face: "door-hided-bottom" },
+  //   { ...DOOR_SAMPLE, face: "door-hided-bottom" },
+  // ]);
+  const [doors, setdoors] = useState<DoorAttribute[]>([
+    { ...DOOR_SAMPLE, face: SETS_OF_FACES_BY_ROOM[currentRoom][0] },
+    { ...DOOR_SAMPLE, face: SETS_OF_FACES_BY_ROOM[currentRoom][1] },
+    { ...DOOR_SAMPLE, face: SETS_OF_FACES_BY_ROOM[currentRoom][2] },
+  ]);
+
+  const [roomSize, setroomSize] = useState<Sizes | null>(null);
   //[c] functions
   const setCoordsDirection = (xCoord: number, yCoord: number) => {
     setDirectionPlayer({ x: xCoord, y: yCoord });
@@ -82,13 +98,13 @@ export default function Dungeon() {
             newY = -door.height;
             break;
           case "door-face-top":
-            newY = WALLS_WIDTH; 
+            newY = WALLS_WIDTH;
             break;
           case "door-face-bottom":
-            newY = roomSize.height - door.height - WALLS_WIDTH; 
+            newY = roomSize.height - door.height - WALLS_WIDTH;
             break;
           case "door-hided-bottom":
-            newY = roomSize.height + door.height; 
+            newY = roomSize.height + door.height;
             break;
           default:
             newY = door.y;
@@ -134,7 +150,10 @@ export default function Dungeon() {
   // [c] Render
   return (
     <div ref={DUNGEON_REF} className={`${style.dungeon}`}>
-      <Rooms room={currentRoom} />
+      <Rooms
+        // room="room1"
+        room={currentRoom}
+      />
       <Player
         orientation={playerOrientation}
         attributes={playerAttributes}

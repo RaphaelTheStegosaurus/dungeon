@@ -17,6 +17,12 @@ interface DoorAttribute extends rectAttribute {
   face: DoorFace;
 }
 type room = "room1" | "room2" | "room3" | "room4";
+interface RoomDoorFaces {
+  room1: DoorFace[];
+  room2: DoorFace[];
+  room3: DoorFace[];
+  room4: DoorFace[];
+}
 export type {
   rectAttribute,
   playerOrientation,
@@ -26,4 +32,5 @@ export type {
   DoorFace,
   DoorAttribute,
   room,
+  RoomDoorFaces,
 };
