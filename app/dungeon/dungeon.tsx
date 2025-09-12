@@ -79,6 +79,29 @@ export default function Dungeon() {
     const constrainedY = Math.min(Math.max(newY, minY), maxY);
     return { x: constrainedX, y: constrainedY };
   };
+  const checkIfPlayerEnteringTheDoor = (
+    _newX: number,
+    _newY: number,
+    _Door: DoorAttribute
+  ) => {
+    const ASIDE_ROOMS = {
+      room1: {
+        next: "room2",
+      },
+      room2: {
+        prev: "room1",
+        next: "room2",
+      },
+      room3: {
+        prev: "room2",
+        next: "room4",
+      },
+      room4: {
+        prev: "room3",
+      },
+    };
+    
+  };
   const getAction = () => {};
   //[c] React Functions
   useEffect(() => {
