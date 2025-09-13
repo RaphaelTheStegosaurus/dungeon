@@ -83,23 +83,6 @@ export default function Dungeon() {
     _newX: number,
     _newY: number
   ): DoorAttribute | undefined => {
-    const ASIDE_ROOMS = {
-      room1: {
-        next: "room2",
-      },
-      room2: {
-        prev: "room1",
-        next: "room2",
-      },
-      room3: {
-        prev: "room2",
-        next: "room4",
-      },
-      room4: {
-        prev: "room3",
-      },
-    };
-
     const playerRect = {
       x: _newX,
       y: _newY,
@@ -117,6 +100,38 @@ export default function Dungeon() {
       }
     }
     return undefined;
+  };
+  const changeRoom = (_doorFace: DoorFace) => {
+    const ASIDE_ROOMS = {
+      room1: {
+        prev: undefined,
+        next: "room2",
+      },
+      room2: {
+        prev: "room1",
+        next: "room3",
+      },
+      room3: {
+        prev: "room2",
+        next: "room4",
+      },
+      room4: {
+        prev: "room3",
+        next: undefined,
+      },
+    };
+    let currentAsideRoom = ASIDE_ROOMS[currentRoom];
+    if (_doorFace === "door-face-top") {
+      if (currentAsideRoom.prev) {
+        return currentAsideRoom.prev;
+      }
+    }
+    if (_doorFace === "door-face-bottom") {
+      if (currentAsideRoom.next) {
+        return currentAsideRoom.next;
+      }
+    }
+    return currentRoom;
   };
   const getAction = () => {};
   //[c] React Functions
@@ -172,19 +187,50 @@ export default function Dungeon() {
           getCurrentY
         );
         if (enteredDoor) {
-          console.log(currentRoom);
-          console.log(enteredDoor.face);
+          let nextRoom = changeRoom(enteredDoor.face) as room;
+          console.log(
+            `In ${currentRoom} entered in the ${enteredDoor.face} and the next Room is ${nextRoom} `
+          );
+          console.log(doors);
+          
+          let resetY;
+          if (enteredDoor.face === "door-face-top") {
+            if (roomSize) {
+              resetY =
+                roomSize.height -
+                ((DOOR_SAMPLE.height + WALLS_WIDTH) * 2 +
+                  playerAttributes.height);
+            } else {
+              resetY = 100;
+            }
+          } else if (enteredDoor.face === "door-face-bottom") {
+            resetY = (DOOR_SAMPLE.height + WALLS_WIDTH) * 2;
+          } else {
+            if (roomSize) {
+              resetY = roomSize.height / 2;
+            } else {
+              resetY = 100;
+            }
+          }
+          setcurrentRoom(nextRoom);
+          setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
+          setplayerAttributes((prev) => ({
+            ...prev,
+            x: getCurrentX,
+            y: resetY,
+          }));
+        } else {
+          const { x: constrainedX, y: constrainedY } = checkBoundaries(
+            getCurrentX,
+            getCurrentY
+          );
+          setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
+          setplayerAttributes((prev) => ({
+            ...prev,
+            x: constrainedX,
+            y: constrainedY,
+          }));
         }
-        const { x: constrainedX, y: constrainedY } = checkBoundaries(
-          getCurrentX,
-          getCurrentY
-        );
-        setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
-        setplayerAttributes((prev) => ({
-          ...prev,
-          x: constrainedX,
-          y: constrainedY,
-        }));
       }, 100);
     }
     return () => {
@@ -197,10 +243,7 @@ export default function Dungeon() {
   // [c] Render
   return (
     <div ref={DUNGEON_REF} className={`${style.dungeon}`}>
-      <Rooms
-        // room="room1"
-        room={currentRoom}
-      />
+      <Rooms room={currentRoom} />
       <Player
         orientation={playerOrientation}
         attributes={playerAttributes}
