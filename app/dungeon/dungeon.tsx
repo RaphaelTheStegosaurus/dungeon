@@ -81,9 +81,8 @@ export default function Dungeon() {
   };
   const checkIfPlayerEnteringTheDoor = (
     _newX: number,
-    _newY: number,
-    _Door: DoorAttribute
-  ) => {
+    _newY: number
+  ): DoorAttribute | undefined => {
     const ASIDE_ROOMS = {
       room1: {
         next: "room2",
@@ -100,7 +99,24 @@ export default function Dungeon() {
         prev: "room3",
       },
     };
-    
+
+    const playerRect = {
+      x: _newX,
+      y: _newY,
+      width: playerAttributes.width,
+      height: playerAttributes.height,
+    };
+    for (const door of doors) {
+      if (
+        playerRect.x < door.x + door.width &&
+        playerRect.x + playerRect.width > door.x &&
+        playerRect.y < door.y + door.height &&
+        playerRect.y + playerRect.height > door.y
+      ) {
+        return door;
+      }
+    }
+    return undefined;
   };
   const getAction = () => {};
   //[c] React Functions
@@ -151,6 +167,14 @@ export default function Dungeon() {
       playerInterval = setInterval(() => {
         getCurrentX += DirectionPlayer.x * PLAYER_VELOCITY;
         getCurrentY += DirectionPlayer.y * PLAYER_VELOCITY;
+        const enteredDoor = checkIfPlayerEnteringTheDoor(
+          getCurrentX,
+          getCurrentY
+        );
+        if (enteredDoor) {
+          console.log(currentRoom);
+          console.log(enteredDoor.face);
+        }
         const { x: constrainedX, y: constrainedY } = checkBoundaries(
           getCurrentX,
           getCurrentY
