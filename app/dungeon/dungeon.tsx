@@ -49,12 +49,6 @@ export default function Dungeon() {
   const [DirectionPlayer, setDirectionPlayer] = useState<Coord>({ x: 0, y: 0 });
 
   const [currentRoom, setcurrentRoom] = useState<room>("room1");
-
-  // const [doors, setdoors] = useState<DoorAttribute[]>([
-  //   { ...DOOR_SAMPLE, face: "door-face-bottom" },
-  //   { ...DOOR_SAMPLE, face: "door-hided-bottom" },
-  //   { ...DOOR_SAMPLE, face: "door-hided-bottom" },
-  // ]);
   const [doors, setdoors] = useState<DoorAttribute[]>([
     { ...DOOR_SAMPLE, face: SETS_OF_FACES_BY_ROOM[currentRoom][0] },
     { ...DOOR_SAMPLE, face: SETS_OF_FACES_BY_ROOM[currentRoom][1] },
@@ -133,6 +127,28 @@ export default function Dungeon() {
     }
     return currentRoom;
   };
+  const returnDoorPositionY = (
+    _doorFace: DoorFace,
+    _roomSize: Sizes
+  ): number => {
+    switch (_doorFace) {
+      case "door-hided-top":
+        return -(DOOR_SAMPLE.height * 2);
+        break;
+      case "door-face-top":
+        return WALLS_WIDTH;
+        break;
+      case "door-face-bottom":
+        return _roomSize.height - DOOR_SAMPLE.height - WALLS_WIDTH;
+        break;
+      case "door-hided-bottom":
+        return _roomSize.height + DOOR_SAMPLE.height * 2;
+        break;
+      default:
+        return DOOR_SAMPLE.y;
+        break;
+    }
+  };
   const getAction = () => {};
   //[c] React Functions
   useEffect(() => {
@@ -145,25 +161,8 @@ export default function Dungeon() {
   useEffect(() => {
     if (roomSize) {
       const newDoors = doors.map((door) => {
-        let newY: number;
+        let newY: number = returnDoorPositionY(door.face, roomSize);
         let newX: number = roomSize.width / 2 - door.width / 2;
-        switch (door.face) {
-          case "door-hided-top":
-            newY = -door.height;
-            break;
-          case "door-face-top":
-            newY = WALLS_WIDTH;
-            break;
-          case "door-face-bottom":
-            newY = roomSize.height - door.height - WALLS_WIDTH;
-            break;
-          case "door-hided-bottom":
-            newY = roomSize.height + door.height;
-            break;
-          default:
-            newY = door.y;
-            break;
-        }
         return {
           ...door,
           y: newY,
@@ -172,7 +171,21 @@ export default function Dungeon() {
       });
       setdoors(newDoors);
     }
-  }, [roomSize, currentRoom]);
+  }, [roomSize]);
+  useEffect(() => {
+    if (roomSize) {
+      setdoors((prev) =>
+        prev.map((value, index) => ({
+          ...value,
+          face: SETS_OF_FACES_BY_ROOM[currentRoom][index],
+          y: returnDoorPositionY(
+            SETS_OF_FACES_BY_ROOM[currentRoom][index],
+            roomSize
+          ),
+        }))
+      );
+    }
+  }, [currentRoom]);
 
   useEffect(() => {
     let playerInterval: NodeJS.Timeout;
@@ -192,7 +205,7 @@ export default function Dungeon() {
             `In ${currentRoom} entered in the ${enteredDoor.face} and the next Room is ${nextRoom} `
           );
           console.log(doors);
-          
+
           let resetY;
           if (enteredDoor.face === "door-face-top") {
             if (roomSize) {

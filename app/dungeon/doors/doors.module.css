@@ -4,4 +4,5 @@
     background: url("/door.png");
     background-repeat: repeat-x;
     background-size:  25% 100%;
+    transition: all ease 0.5s;
 }
