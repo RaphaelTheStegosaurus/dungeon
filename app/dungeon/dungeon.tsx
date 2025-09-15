@@ -160,32 +160,22 @@ export default function Dungeon() {
 
   useEffect(() => {
     if (roomSize) {
-      const newDoors = doors.map((door) => {
-        let newY: number = returnDoorPositionY(door.face, roomSize);
-        let newX: number = roomSize.width / 2 - door.width / 2;
-        return {
-          ...door,
-          y: newY,
-          x: newX,
-        };
+      setdoors((prevDoors) => {
+        const newDoors = prevDoors.map((door, index) => {
+          const newFace: DoorFace = SETS_OF_FACES_BY_ROOM[currentRoom][index];
+          const newY: number = returnDoorPositionY(newFace, roomSize);
+          const newX: number = roomSize.width / 2 - door.width / 2;
+          return {
+            ...door,
+            face: newFace,
+            y: newY,
+            x: newX,
+          };
+        });
+        return newDoors;
       });
-      setdoors(newDoors);
     }
-  }, [roomSize]);
-  useEffect(() => {
-    if (roomSize) {
-      setdoors((prev) =>
-        prev.map((value, index) => ({
-          ...value,
-          face: SETS_OF_FACES_BY_ROOM[currentRoom][index],
-          y: returnDoorPositionY(
-            SETS_OF_FACES_BY_ROOM[currentRoom][index],
-            roomSize
-          ),
-        }))
-      );
-    }
-  }, [currentRoom]);
+  }, [roomSize, currentRoom]);
 
   useEffect(() => {
     let playerInterval: NodeJS.Timeout;
@@ -200,11 +190,12 @@ export default function Dungeon() {
           getCurrentY
         );
         if (enteredDoor) {
+          setisPlayerMovement(false);
           let nextRoom = changeRoom(enteredDoor.face) as room;
-          console.log(
-            `In ${currentRoom} entered in the ${enteredDoor.face} and the next Room is ${nextRoom} `
-          );
-          console.log(doors);
+          // console.log(
+          //   `In ${currentRoom} entered in the ${enteredDoor.face} and the next Room is ${nextRoom} `
+          // );
+          // console.log(doors);
 
           let resetY;
           if (enteredDoor.face === "door-face-top") {
