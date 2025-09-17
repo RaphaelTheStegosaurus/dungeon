@@ -23,6 +23,21 @@ interface RoomDoorFaces {
   room3: DoorFace[];
   room4: DoorFace[];
 }
+interface Sets_of_Doorfaces_by_Room {
+  [title: room]: DoorFace[];
+}
+interface Navigation_Room {
+  prev: room | undefined;
+  next: room | undefined;
+}
+// interface Aside_Room_Sets {
+//   [title: room]: {
+//     ["prev" | "next"]: room | undefined;
+//   };
+// }
+interface Aside_Room_Sets {
+  [title: room]: Navigation_Room;
+}
 export type {
   rectAttribute,
   playerOrientation,
@@ -33,4 +48,7 @@ export type {
   DoorAttribute,
   room,
   RoomDoorFaces,
+  Sets_of_Doorfaces_by_Room,
+  Aside_Room_Sets,
+  Navigation_Room,
 };

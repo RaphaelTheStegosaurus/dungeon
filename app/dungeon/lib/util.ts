@@ -1,12 +1,14 @@
+import Room from "../rooms/room";
 import {
   Coord,
   DoorAttribute,
   DoorFace,
+  Navigation_Room,
   rectAttribute,
   room,
   Sizes,
 } from "../types";
-import { WALLS_WIDTH, DOOR_SAMPLE,ASIDE_ROOMS } from "./constants"; 
+import { WALLS_WIDTH, DOOR_SAMPLE, ASIDE_ROOMS } from "./constants";
 
 export const checkIfPlayerEnteringTheDoor = (
   playerRect: rectAttribute,
@@ -56,12 +58,8 @@ export const returnDoorPositionY = (
       return DOOR_SAMPLE.y;
   }
 };
-
-export const changeRoom = (
-  _doorFace: DoorFace,
-  currentRoom: room,
-) => {
-  const currentAsideRoom = ASIDE_ROOMS[currentRoom];
+export const changeRoom = (_doorFace: DoorFace, currentRoom: room): room => {
+  const currentAsideRoom:Navigation_Room = ASIDE_ROOMS[currentRoom];
   if (_doorFace === "door-face-top") {
     if (currentAsideRoom.prev) {
       return currentAsideRoom.prev;
