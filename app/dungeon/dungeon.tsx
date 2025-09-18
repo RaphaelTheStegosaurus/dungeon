@@ -15,23 +15,23 @@ import {
   Sizes,
   SpritePosition,
 } from "./types";
+
+import {
+  PLAYER_VELOCITY,
+  WALLS_WIDTH,
+  DOOR_SAMPLE,
+  SETS_OF_FACES_BY_ROOM,
+  ASIDE_ROOMS,
+} from "./lib/constants";
+import {
+  checkIfPlayerEnteringTheDoor,
+  checkBoundaries,
+  returnDoorPositionY,
+  changeRoom,
+} from "./lib/util";
+
 import Doors from "./doors/doors";
 export default function Dungeon() {
-  //[c] Const
-  const PLAYER_VELOCITY = 20;
-  const WALLS_WIDTH = 20;
-  const DOOR_SAMPLE: rectAttribute = {
-    x: 0,
-    y: 0,
-    height: 20,
-    width: 75,
-  };
-  const SETS_OF_FACES_BY_ROOM: RoomDoorFaces = {
-    room1: ["door-face-bottom", "door-hided-bottom", "door-hided-bottom"],
-    room2: ["door-face-top", "door-face-bottom", "door-hided-bottom"],
-    room3: ["door-hided-top", "door-face-top", "door-face-bottom"],
-    room4: ["door-hided-top", "door-hided-top", "door-face-top"],
-  };
   //[c] React Variables
   const PLAYER_REF = useRef<HTMLDivElement>(null);
   const DUNGEON_REF = useRef<HTMLDivElement>(null);
