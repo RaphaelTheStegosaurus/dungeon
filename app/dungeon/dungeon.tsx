@@ -63,16 +63,6 @@ export default function Dungeon() {
   const setOrientation = (_orientation: playerOrientation) => {
     setplayerOrientation(_orientation);
   };
-  const checkBoundaries = (newX: number, newY: number): Coord => {
-    if (!roomSize) return { x: newX, y: newY };
-    const minX = 0 + WALLS_WIDTH;
-    const minY = 0 + WALLS_WIDTH;
-    const maxX = roomSize.width - playerAttributes.width - WALLS_WIDTH;
-    const maxY = roomSize.height - playerAttributes.height - WALLS_WIDTH;
-    const constrainedX = Math.min(Math.max(newX, minX), maxX);
-    const constrainedY = Math.min(Math.max(newY, minY), maxY);
-    return { x: constrainedX, y: constrainedY };
-  };
   const checkIfPlayerEnteringTheDoor = (
     _newX: number,
     _newY: number
@@ -226,8 +216,14 @@ export default function Dungeon() {
         } else {
           const { x: constrainedX, y: constrainedY } = checkBoundaries(
             getCurrentX,
-            getCurrentY
+            getCurrentY,
+            playerAttributes,
+            roomSize ? roomSize : { height: 400, width: 600 }
           );
+          // const { x: constrainedX, y: constrainedY } = checkBoundaries(
+          //   getCurrentX,
+          //   getCurrentY
+          // );
           setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
           setplayerAttributes((prev) => ({
             ...prev,
