@@ -11,7 +11,6 @@ import {
   playerOrientation,
   rectAttribute,
   room,
-  RoomDoorFaces,
   Sizes,
   SpritePosition,
 } from "./types";
@@ -21,7 +20,6 @@ import {
   WALLS_WIDTH,
   DOOR_SAMPLE,
   SETS_OF_FACES_BY_ROOM,
-  ASIDE_ROOMS,
 } from "./lib/constants";
 import {
   checkIfPlayerEnteringTheDoor,
@@ -63,82 +61,6 @@ export default function Dungeon() {
   const setOrientation = (_orientation: playerOrientation) => {
     setplayerOrientation(_orientation);
   };
-  const checkIfPlayerEnteringTheDoor = (
-    _newX: number,
-    _newY: number
-  ): DoorAttribute | undefined => {
-    const playerRect = {
-      x: _newX,
-      y: _newY,
-      width: playerAttributes.width,
-      height: playerAttributes.height,
-    };
-    for (const door of doors) {
-      if (
-        playerRect.x < door.x + door.width &&
-        playerRect.x + playerRect.width > door.x &&
-        playerRect.y < door.y + door.height &&
-        playerRect.y + playerRect.height > door.y
-      ) {
-        return door;
-      }
-    }
-    return undefined;
-  };
-  const changeRoom = (_doorFace: DoorFace) => {
-    const ASIDE_ROOMS = {
-      room1: {
-        prev: undefined,
-        next: "room2",
-      },
-      room2: {
-        prev: "room1",
-        next: "room3",
-      },
-      room3: {
-        prev: "room2",
-        next: "room4",
-      },
-      room4: {
-        prev: "room3",
-        next: undefined,
-      },
-    };
-    let currentAsideRoom = ASIDE_ROOMS[currentRoom];
-    if (_doorFace === "door-face-top") {
-      if (currentAsideRoom.prev) {
-        return currentAsideRoom.prev;
-      }
-    }
-    if (_doorFace === "door-face-bottom") {
-      if (currentAsideRoom.next) {
-        return currentAsideRoom.next;
-      }
-    }
-    return currentRoom;
-  };
-  const returnDoorPositionY = (
-    _doorFace: DoorFace,
-    _roomSize: Sizes
-  ): number => {
-    switch (_doorFace) {
-      case "door-hided-top":
-        return -(DOOR_SAMPLE.height * 2);
-        break;
-      case "door-face-top":
-        return WALLS_WIDTH;
-        break;
-      case "door-face-bottom":
-        return _roomSize.height - DOOR_SAMPLE.height - WALLS_WIDTH;
-        break;
-      case "door-hided-bottom":
-        return _roomSize.height + DOOR_SAMPLE.height * 2;
-        break;
-      default:
-        return DOOR_SAMPLE.y;
-        break;
-    }
-  };
   const getAction = () => {};
   //[c] React Functions
   useEffect(() => {
@@ -175,13 +97,18 @@ export default function Dungeon() {
       playerInterval = setInterval(() => {
         getCurrentX += DirectionPlayer.x * PLAYER_VELOCITY;
         getCurrentY += DirectionPlayer.y * PLAYER_VELOCITY;
-        const enteredDoor = checkIfPlayerEnteringTheDoor(
-          getCurrentX,
-          getCurrentY
-        );
+
+        const playerRect: rectAttribute = {
+          x: getCurrentX,
+          y: getCurrentY,
+          width: playerAttributes.width,
+          height: playerAttributes.height,
+        };
+        const enteredDoor = checkIfPlayerEnteringTheDoor(playerRect,doors);
+
         if (enteredDoor) {
           setisPlayerMovement(false);
-          let nextRoom = changeRoom(enteredDoor.face) as room;
+          let nextRoom = changeRoom(enteredDoor.face,currentRoom) as room;
           // console.log(
           //   `In ${currentRoom} entered in the ${enteredDoor.face} and the next Room is ${nextRoom} `
           // );
