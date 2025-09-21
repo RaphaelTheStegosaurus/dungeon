@@ -1,0 +1,23 @@
+.BoxDialog {
+    position: absolute;
+    top: 2dvh;
+    width: 95%;
+    border: 5px solid cyan;
+    border-radius: 20px;
+    height: auto;
+    max-height: 50dvh;
+    overflow-y: scroll;
+    padding: 2dvh 3dvw 4dvh;
+    background: rgba(255, 255, 255, 0.5);
+    z-index: 8;
+}
+
+.Character {
+    margin-bottom: 1rem;
+    color: darkblue;
+
+}
+
+.Text {
+
+}

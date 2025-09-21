@@ -29,6 +29,7 @@ import {
 } from "./lib/util";
 
 import Doors from "./doors/doors";
+import Dialog from "./dialog/dialog";
 export default function Dungeon() {
   //[c] React Variables
   const PLAYER_REF = useRef<HTMLDivElement>(null);
@@ -184,6 +185,7 @@ export default function Dungeon() {
         orientationFunction={setOrientation}
         changeIsplayerMovement={setisPlayerMovement}
       />
+      <Dialog/>
     </div>
   );
 }
