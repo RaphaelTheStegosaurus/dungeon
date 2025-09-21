@@ -1,13 +1,16 @@
 .dpad {
     z-index: 10;
     position: absolute;
-    width: 200px;
-    aspect-ratio: 2/1;
-    bottom: 10px;
-    left: 10px;
+    width: min-content;
+    height: min-content;
+    aspect-ratio: 1 !important;
+    bottom: 5dvh;
+    left: 5dvw;
     background: rgba(100, 100, 100, 0.5);
     border-radius: 50%;
+    border: 1px solid white;
     display: grid;
+    gap: 0 2dvw;
     grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: 1fr 2fr 1fr;
     grid-template-areas:
@@ -19,11 +22,12 @@
 .dpadButton {
     background: transparent;
     text-shadow: 0 0 5px white;
-    font-size: 2rem;
+    font-size: clamp(1rem, 2dvw ,4rem);
     border: none;
     user-select: none;
+    transition: all .5s ease;
     &:active{
-        background: white;
+       color: gray;
     }
 }
 
@@ -47,6 +51,5 @@
 
 .dpadSelect {
     grid-area: dpadSelect;
-    border-radius: 50%;
-    font-size: 4rem;
+    font-size: clamp(1rem,4vw,4rem) !important;
 }
