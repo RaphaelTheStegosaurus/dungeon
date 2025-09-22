@@ -66,6 +66,9 @@ export default function Dungeon() {
   const getAction = () => {
     setisShowDialogBox(!isShowDialogBox);
   };
+  const closeDialogBox = () => {
+    setisShowDialogBox(false);
+  };
   //[c] React Functions
   useEffect(() => {
     if (DUNGEON_REF.current) {
@@ -188,7 +191,15 @@ export default function Dungeon() {
         orientationFunction={setOrientation}
         changeIsplayerMovement={setisPlayerMovement}
       />
-      {isShowDialogBox ? <Dialog characterName="Personaje" text="Me llamo Rafael Alberto Serrato Morales"/> : ""}
+      {isShowDialogBox ? (
+        <Dialog
+          characterName="Personaje"
+          text="Me llamo Rafael Alberto Serrato Morales"
+          onClose={closeDialogBox}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }

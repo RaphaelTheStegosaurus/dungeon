@@ -3,23 +3,27 @@ import { useEffect, useRef, useState } from "react";
 interface Props {
   characterName: string;
   text: string;
+  onClose: () => void;
 }
 import Style from "./dialog.module.css";
-const Dialog = ({ characterName, text }: Props) => {
+const Dialog = ({ characterName, text, onClose }: Props) => {
   const [displayedText, setDisplayedText] = useState("");
   const words = text.split(" ");
+  const wordCount = text.split(" ").length;
   useEffect(() => {
     let currentWordIndex = 0;
     setDisplayedText("");
     const interval = setInterval(() => {
-      if (currentWordIndex < words.length) {
-        // console.log(words[currentWordIndex]);
-        setDisplayedText((prev) => prev + words[currentWordIndex] + ' ');
+      console.log(words);
+
+      if (currentWordIndex < wordCount) {
+        const newWord = words.shift();
+        setDisplayedText((prev) => prev + newWord + " ");
         currentWordIndex++;
       } else {
         clearInterval(interval);
       }
-    }, 1000);
+    }, 100);
 
     return () => clearInterval(interval);
   }, [text]);
@@ -27,7 +31,7 @@ const Dialog = ({ characterName, text }: Props) => {
     <div className={`${Style.BoxDialog}`}>
       <h2 className={`${Style.Character}`}>-{characterName}-</h2>
       <p className={`${Style.Text}`}>{displayedText}</p>
-      {/* <button onClick={onClose}>Cerrar</button> */}
+      <button onClick={onClose}>Cerrar</button>
     </div>
   );
 };
