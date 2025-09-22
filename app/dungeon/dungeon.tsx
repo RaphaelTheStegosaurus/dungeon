@@ -193,7 +193,7 @@ export default function Dungeon() {
       />
       {isShowDialogBox ? (
         <Dialog
-          characterName="Personaje"
+          characterName="Rafael Alberto"
           text="Me llamo Rafael Alberto Serrato Morales"
           onClose={closeDialogBox}
         />

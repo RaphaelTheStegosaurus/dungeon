@@ -31,7 +31,7 @@ const Dialog = ({ characterName, text, onClose }: Props) => {
     <div className={`${Style.BoxDialog}`}>
       <h2 className={`${Style.Character}`}>-{characterName}-</h2>
       <p className={`${Style.Text}`}>{displayedText}</p>
-      <button onClick={onClose}>Cerrar</button>
+      <button className={`${Style.CloseButton}`} onClick={onClose}>Cerrar</button>
     </div>
   );
 };

@@ -8,17 +8,69 @@
     max-height: 50dvh;
     overflow-y: scroll;
     padding: 2dvh 3dvw 4dvh;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
     z-index: 8;
 }
 
 .Character {
-    margin-bottom: 1rem;
-    color: darkblue;
-
+    position: relative;
+    margin-bottom: 4vh;
+    color: cyan;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    animation: ShowCharacterName .5s ease 0s 1 forwards;
+    &::after {
+        content: '';
+        width: 0%;
+        height: 2px;
+        bottom: -1vh;
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 5px cyan,
+            0 0 10px cyan,
+            0 0 15px cyan;
+            animation: ExtendBarName .5s ease .5s 1 forwards;
+    }
 }
 
 .Text {
     white-space: pre-wrap;
+    transition: all ease 0.5;
+}
+
+.CloseButton {
+    padding: 1vh 2vw;
+    margin-inline: auto;
+    font-size: 1.2vw;
+    color: white;
+    background: red;
+    border-radius: 1vw;
+}
+
+@keyframes ShowCharacterName {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes ExtendBarName {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
 }
