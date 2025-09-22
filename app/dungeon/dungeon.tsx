@@ -55,6 +55,7 @@ export default function Dungeon() {
   ]);
 
   const [roomSize, setroomSize] = useState<Sizes | null>(null);
+  const [isShowDialogBox, setisShowDialogBox] = useState(false);
   //[c] functions
   const setCoordsDirection = (xCoord: number, yCoord: number) => {
     setDirectionPlayer({ x: xCoord, y: yCoord });
@@ -62,7 +63,9 @@ export default function Dungeon() {
   const setOrientation = (_orientation: playerOrientation) => {
     setplayerOrientation(_orientation);
   };
-  const getAction = () => {};
+  const getAction = () => {
+    setisShowDialogBox(!isShowDialogBox);
+  };
   //[c] React Functions
   useEffect(() => {
     if (DUNGEON_REF.current) {
@@ -105,11 +108,11 @@ export default function Dungeon() {
           width: playerAttributes.width,
           height: playerAttributes.height,
         };
-        const enteredDoor = checkIfPlayerEnteringTheDoor(playerRect,doors);
+        const enteredDoor = checkIfPlayerEnteringTheDoor(playerRect, doors);
 
         if (enteredDoor) {
           setisPlayerMovement(false);
-          let nextRoom = changeRoom(enteredDoor.face,currentRoom) as room;
+          let nextRoom = changeRoom(enteredDoor.face, currentRoom) as room;
           // console.log(
           //   `In ${currentRoom} entered in the ${enteredDoor.face} and the next Room is ${nextRoom} `
           // );
@@ -185,7 +188,7 @@ export default function Dungeon() {
         orientationFunction={setOrientation}
         changeIsplayerMovement={setisPlayerMovement}
       />
-      <Dialog/>
+      {isShowDialogBox ? <Dialog characterName="Personaje" text="Me llamo Rafael Alberto Serrato Morales"/> : ""}
     </div>
   );
 }
