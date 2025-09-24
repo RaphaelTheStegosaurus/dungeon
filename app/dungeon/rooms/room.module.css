@@ -17,3 +17,9 @@
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
+.room:nth-child(1){
+    /* Todo:  trabajar en los sprites de cada room o de todas e general */
+    /* background: url("/rooms/wood.png") !important;
+    background-size: 50px 50px !important;
+    background-repeat: repeat !important; */
+}
