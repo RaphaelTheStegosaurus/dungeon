@@ -30,7 +30,7 @@ import {
 
 import Doors from "./doors/doors";
 import Dialog from "./dialog/dialog";
-import { NPC } from "./npc/npc";
+import NPC_Manager from "./npc/npc-manager";
 export default function Dungeon() {
   //[c] React Variables
   const PLAYER_REF = useRef<HTMLDivElement>(null);
@@ -70,6 +70,15 @@ export default function Dungeon() {
   const closeDialogBox = () => {
     setisShowDialogBox(false);
   };
+  //[c] NPC Work Area-----------------------------------
+  const [NPCAttribute, setNPCAttribute] = useState<rectAttribute>();
+  const HandleNPCAttributes = (_newValues: rectAttribute) => {
+    setNPCAttribute(_newValues);
+  };
+  useEffect(() => {
+    console.log(NPCAttribute);
+  }, [NPCAttribute]);
+  //-------------------------------------------------------
   //[c] React Functions
   useEffect(() => {
     if (DUNGEON_REF.current) {
@@ -185,14 +194,11 @@ export default function Dungeon() {
         spriteSelector={playerSpritePosition}
         ref={PLAYER_REF}
       />
-      <NPC
-        attributes={{
-          height: 50,
-          width: 50,
-          x: 200,
-          y: 100,
-        }}
-        orientation={playerOrientation}
+      <NPC_Manager
+        CurrentRoom={currentRoom}
+        PlayerAttribute={playerAttributes}
+        PlayerOrientation={playerOrientation}
+        HandleCoords={HandleNPCAttributes}
       />
       <Doors doors={doors} />
       <Dpad
