@@ -30,6 +30,7 @@ import {
 
 import Doors from "./doors/doors";
 import Dialog from "./dialog/dialog";
+import { NPC } from "./npc/npc";
 export default function Dungeon() {
   //[c] React Variables
   const PLAYER_REF = useRef<HTMLDivElement>(null);
@@ -183,6 +184,15 @@ export default function Dungeon() {
         attributes={playerAttributes}
         spriteSelector={playerSpritePosition}
         ref={PLAYER_REF}
+      />
+      <NPC
+        attributes={{
+          height: 50,
+          width: 50,
+          x: 200,
+          y: 100,
+        }}
+        orientation={playerOrientation}
       />
       <Doors doors={doors} />
       <Dpad
