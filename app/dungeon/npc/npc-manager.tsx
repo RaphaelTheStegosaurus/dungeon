@@ -7,12 +7,14 @@ interface Props {
   PlayerOrientation: playerOrientation;
   CurrentRoom: room;
   HandleCoords: (_Attributes: rectAttribute) => void;
+  HandleNear: (_Id: number) => void;
 }
 export default function NPC_Manager({
   PlayerAttribute,
   PlayerOrientation,
   CurrentRoom,
   HandleCoords,
+  HandleNear,
 }: Props) {
   const [rectAttribute, setRectAttribute] = useState<rectAttribute>({
     width: 50,
@@ -48,8 +50,10 @@ export default function NPC_Manager({
   };
   useEffect(() => {
     if (CalculatingDistance() < 60) {
+      HandleNear(6);
       setCurrentOrientation(SetChangeOrientation());
     } else {
+      HandleNear(0);
       setCurrentOrientation("SOUTH");
     }
   }, [PlayerAttribute, PlayerOrientation]);

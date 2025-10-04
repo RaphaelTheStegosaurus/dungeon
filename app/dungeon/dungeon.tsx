@@ -32,6 +32,7 @@ import {
 import Doors from "./doors/doors";
 import Dialog from "./dialog/dialog";
 import NPC_Manager from "./npc/npc-manager";
+import { DIALOGS } from "./lib/npc-data";
 export default function Dungeon() {
   //[c] React Variables
   const PLAYER_REF = useRef<HTMLDivElement>(null);
@@ -73,11 +74,15 @@ export default function Dungeon() {
   };
   //[c] NPC Work Area-----------------------------------
   const [NPCAttribute, setNPCAttribute] = useState<rectAttribute>();
+  const [NPCNear, setNPCNear] = useState(0);
   const HandleNPCAttributes = (_newValues: rectAttribute) => {
     setNPCAttribute(_newValues);
   };
+  const HandleIsNearNPC = (_id: number) => {
+    setNPCNear(_id);
+  };
   useEffect(() => {
-    console.log(NPCAttribute);
+    // console.log(NPCAttribute);
   }, [NPCAttribute]);
   //-------------------------------------------------------
   //[c] React Functions
@@ -160,7 +165,7 @@ export default function Dungeon() {
             playerAttributes,
             roomSize ? roomSize : { height: 400, width: 600 }
           );
-          if (NPCAttribute) {   
+          if (NPCAttribute) {
             constrainedX = CheckObjectBoundaries(playerRect, NPCAttribute).x;
             constrainedY = CheckObjectBoundaries(playerRect, NPCAttribute).y;
           }
@@ -195,6 +200,7 @@ export default function Dungeon() {
         PlayerAttribute={playerAttributes}
         PlayerOrientation={playerOrientation}
         HandleCoords={HandleNPCAttributes}
+        HandleNear={HandleIsNearNPC}
       />
       <Doors doors={doors} />
       <Dpad
@@ -205,8 +211,8 @@ export default function Dungeon() {
       />
       {isShowDialogBox ? (
         <Dialog
-          characterName="Rafael Alberto"
-          text="Me llamo Rafael Alberto Serrato Morales"
+          characterName={DIALOGS[NPCNear].name}
+          text={DIALOGS[NPCNear].text}
           onClose={closeDialogBox}
         />
       ) : (
