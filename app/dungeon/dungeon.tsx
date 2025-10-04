@@ -26,6 +26,7 @@ import {
   checkBoundaries,
   returnDoorPositionY,
   changeRoom,
+  CheckObjectBoundaries,
 } from "./lib/util";
 
 import Doors from "./doors/doors";
@@ -126,11 +127,6 @@ export default function Dungeon() {
         if (enteredDoor) {
           setisPlayerMovement(false);
           let nextRoom = changeRoom(enteredDoor.face, currentRoom) as room;
-          // console.log(
-          //   `In ${currentRoom} entered in the ${enteredDoor.face} and the next Room is ${nextRoom} `
-          // );
-          // console.log(doors);
-
           let resetY;
           if (enteredDoor.face === "door-face-top") {
             if (roomSize) {
@@ -158,16 +154,16 @@ export default function Dungeon() {
             y: resetY,
           }));
         } else {
-          const { x: constrainedX, y: constrainedY } = checkBoundaries(
+          let { x: constrainedX, y: constrainedY } = checkBoundaries(
             getCurrentX,
             getCurrentY,
             playerAttributes,
             roomSize ? roomSize : { height: 400, width: 600 }
           );
-          // const { x: constrainedX, y: constrainedY } = checkBoundaries(
-          //   getCurrentX,
-          //   getCurrentY
-          // );
+          if (NPCAttribute) {   
+            constrainedX = CheckObjectBoundaries(playerRect, NPCAttribute).x;
+            constrainedY = CheckObjectBoundaries(playerRect, NPCAttribute).y;
+          }
           setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
           setplayerAttributes((prev) => ({
             ...prev,

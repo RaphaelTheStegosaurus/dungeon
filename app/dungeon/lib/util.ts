@@ -26,6 +26,39 @@ export const checkIfPlayerEnteringTheDoor = (
   }
   return undefined;
 };
+export const CheckObjectBoundaries = (
+  playerRect: rectAttribute,
+  ObjectRect: rectAttribute
+) => {
+  const { x, y, width, height } = playerRect;
+  const overlapLeft = ObjectRect.x + ObjectRect.width - x;
+  const overlapRight = x + width - ObjectRect.x;
+  const overlapTop = ObjectRect.y + ObjectRect.height - y;
+  const overlapBottom = y + height - ObjectRect.y;
+  const isCollidingX = overlapLeft > 0 && overlapRight > 0;
+  const isCollidingY = overlapTop > 0 && overlapBottom > 0;
+  if (!isCollidingX || !isCollidingY) {
+    return { x, y };
+  }
+  const minOverlapX = Math.min(overlapLeft, overlapRight);
+  const minOverlapY = Math.min(overlapTop, overlapBottom);
+  let newX = x;
+  let newY = y;
+  if (minOverlapX < minOverlapY) {
+    if (overlapLeft < overlapRight) {
+      newX = ObjectRect.x + ObjectRect.width;
+    } else {
+      newX = ObjectRect.x - width;
+    }
+  } else {
+    if (overlapTop < overlapBottom) {
+      newY = ObjectRect.y + ObjectRect.height;
+    } else {
+      newY = ObjectRect.y - height;
+    }
+  }
+  return { x: newX, y: newY };
+};
 export const checkBoundaries = (
   newX: number,
   newY: number,
@@ -59,7 +92,7 @@ export const returnDoorPositionY = (
   }
 };
 export const changeRoom = (_doorFace: DoorFace, currentRoom: room): room => {
-  const currentAsideRoom:Navigation_Room = ASIDE_ROOMS[currentRoom];
+  const currentAsideRoom: Navigation_Room = ASIDE_ROOMS[currentRoom];
   if (_doorFace === "door-face-top") {
     if (currentAsideRoom.prev) {
       return currentAsideRoom.prev;
