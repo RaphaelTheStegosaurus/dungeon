@@ -73,17 +73,18 @@ export default function Dungeon() {
     setisShowDialogBox(false);
   };
   //[c] NPC Work Area-----------------------------------
-  const [NPCAttribute, setNPCAttribute] = useState<rectAttribute>();
   const [NPCNear, setNPCNear] = useState(0);
+  const [NPCAttribute, setNPCAttribute] = useState<rectAttribute>();
+  const [NPC2, setNPC2] = useState<rectAttribute>();
   const HandleNPCAttributes = (_newValues: rectAttribute) => {
     setNPCAttribute(_newValues);
+  };
+  const HandleNPC2 = (_newValues: rectAttribute) => {
+    setNPC2(_newValues);
   };
   const HandleIsNearNPC = (_id: number) => {
     setNPCNear(_id);
   };
-  useEffect(() => {
-    // console.log(NPCAttribute);
-  }, [NPCAttribute]);
   //-------------------------------------------------------
   //[c] React Functions
   useEffect(() => {
@@ -165,9 +166,11 @@ export default function Dungeon() {
             playerAttributes,
             roomSize ? roomSize : { height: 400, width: 600 }
           );
-          if (NPCAttribute) {
+          if (NPCAttribute && NPC2) {
             constrainedX = CheckObjectBoundaries(playerRect, NPCAttribute).x;
             constrainedY = CheckObjectBoundaries(playerRect, NPCAttribute).y;
+            constrainedX = CheckObjectBoundaries(playerRect, NPC2).x;
+            constrainedY = CheckObjectBoundaries(playerRect, NPC2).y;
           }
           setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
           setplayerAttributes((prev) => ({
@@ -200,6 +203,7 @@ export default function Dungeon() {
         PlayerAttribute={playerAttributes}
         PlayerOrientation={playerOrientation}
         HandleCoords={HandleNPCAttributes}
+        HandleCoordsNPC2={HandleNPC2}
         HandleNear={HandleIsNearNPC}
       />
       <Doors doors={doors} />
