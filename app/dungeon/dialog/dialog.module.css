@@ -6,7 +6,6 @@
     border-radius: 20px;
     height: auto;
     max-height: 50dvh;
-    overflow-y: scroll;
     padding: 2dvh 3dvw 4dvh;
     background: rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -26,6 +25,7 @@
     align-items: center;
     opacity: 0;
     animation: ShowCharacterName .5s ease 0s 1 forwards;
+
     &::after {
         content: '';
         width: 0%;
@@ -37,13 +37,32 @@
         box-shadow: 0 0 5px cyan,
             0 0 10px cyan,
             0 0 15px cyan;
-            animation: ExtendBarName .5s ease .5s 1 forwards;
+        animation: ExtendBarName .5s ease .5s 1 forwards;
     }
 }
 
 .Text {
+    height: 100px;
     white-space: pre-wrap;
     transition: all ease 0.5;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-button:start {
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 20px solid turquoise;
+        
+    }
+    
+    &::-webkit-scrollbar-button:end {
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 20px solid turquoise;
+    }
 }
 
 .CloseButton {

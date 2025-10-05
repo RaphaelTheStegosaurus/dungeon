@@ -22,7 +22,15 @@ export const DIALOGS = [
      que este no afecte el flujo de carga ademas de aparte la 
      mayoría de funciones esto te dejaría libre de sobre saturation 
      del programa y estaría mas dividido checa las descripción
-     del hook usecontext `,
+     del hook usecontext 
+     del hook usecontext 
+     del hook usecontext 
+     del hook usecontext 
+     del hook usecontext 
+     del hook usecontext 
+     del hook usecontext 
+     del hook usecontext 
+     `,
   },
   {
     name: "Rafael Alberto The Stegosaurus",
