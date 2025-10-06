@@ -66,10 +66,10 @@ export default function NPC_Manager({
   };
   useEffect(() => {
     if (CalculatingDistance(PlayerAttribute, rectAttribute) < 60) {
-      HandleNear(6);
+      HandleNear(5);
       setCurrentOrientation(SetChangeOrientation());
     } else if (CalculatingDistance(PlayerAttribute, rectNPC2) < 60) {
-      HandleNear(3);
+      HandleNear(2);
       setNPC2Orientation(SetChangeOrientation());
     } else {
       HandleNear(0);
@@ -83,8 +83,8 @@ export default function NPC_Manager({
   }, [rectAttribute, rectNPC2]);
   return (
     <>
-      <NPC id={6} attributes={rectAttribute} orientation={CurrentOrientation} />
-      <NPC id={3} attributes={rectNPC2} orientation={NPC2Orientation} />
+      <NPC id={5} attributes={rectAttribute} orientation={CurrentOrientation} />
+      <NPC id={2} attributes={rectNPC2} orientation={NPC2Orientation} />
     </>
   );
 }

@@ -8,10 +8,6 @@ export const DIALOGS = [
     text: "Hola me llamo Rafael Alberto Serrato Morales",
   },
   {
-    name: "Rafael Alberto The Stegosaurus",
-    text: "Hola me llamo Rafael Alberto Serrato Morales",
-  },
-  {
     name: "Tu Segundo NPC",
     text: `
     Hola mucho gusto de verme soy el segundo npc, 

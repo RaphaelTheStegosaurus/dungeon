@@ -3,7 +3,7 @@ import style from "./npc.module.css";
 interface Props {
   attributes: rectAttribute;
   orientation: playerOrientation;
-  id: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  id: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
 const NPC = ({ attributes, orientation, id }: Props) => {
   const TemporalUrl = "/npc/npc-06-idle.png";
@@ -30,7 +30,7 @@ const NPC = ({ attributes, orientation, id }: Props) => {
         height: `${attributes.height}px`,
         top: `${attributes.y}px`,
         left: `${attributes.x}px`,
-        backgroundImage: `url(${LIST_OF_SPRITES[id-1]})`,
+        backgroundImage: `url(${LIST_OF_SPRITES[id]})`,
         backgroundSize: "300% 100%",
         backgroundPosition: `${SpritesConfig[orientation]}`,
         transform: `scaleX(${orientation === "WEST" ? -1 : 1})`,
