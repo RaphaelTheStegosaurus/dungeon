@@ -1,5 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import style from "./dungeon.module.css";
 import Player from "./player/player";
 import Rooms from "./rooms/rooms";
@@ -60,15 +66,16 @@ export default function Dungeon() {
   const [roomSize, setroomSize] = useState<Sizes | null>(null);
   const [isShowDialogBox, setisShowDialogBox] = useState(false);
   //[c] functions
-  const setCoordsDirection = (xCoord: number, yCoord: number) => {
+  const setCoordsDirection = useCallback((xCoord: number, yCoord: number) => {
     setDirectionPlayer({ x: xCoord, y: yCoord });
-  };
+  }, []);
   const setOrientation = (_orientation: playerOrientation) => {
     setplayerOrientation(_orientation);
   };
-  const getAction = () => {
+  const getAction = useCallback(() => {
     setisShowDialogBox(!isShowDialogBox);
-  };
+  }, [isShowDialogBox]);
+
   const closeDialogBox = () => {
     setisShowDialogBox(false);
   };
@@ -76,18 +83,19 @@ export default function Dungeon() {
   const [NPCNear, setNPCNear] = useState(0);
   const [NPCAttribute, setNPCAttribute] = useState<rectAttribute>();
   const [NPC2, setNPC2] = useState<rectAttribute>();
-  const HandleNPCAttributes = (_newValues: rectAttribute) => {
+  
+  const HandleNPCAttributes = useCallback((_newValues: rectAttribute) => {
     setNPCAttribute(_newValues);
-  };
-  const HandleNPC2 = (_newValues: rectAttribute) => {
+  }, []);
+  const HandleNPC2 = useCallback((_newValues: rectAttribute) => {
     setNPC2(_newValues);
-  };
-  const HandleIsNearNPC = (_id: number) => {
+  }, []);
+  const HandleIsNearNPC = useCallback((_id: number) => {
     setNPCNear(_id);
-  };
+  }, []);
   //-------------------------------------------------------
   //[c] React Functions
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (DUNGEON_REF.current) {
       const RoomRect = DUNGEON_REF.current.getBoundingClientRect();
       setroomSize({ width: RoomRect.width, height: RoomRect.height });

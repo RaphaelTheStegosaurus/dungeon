@@ -42,4 +42,4 @@ const Dpadbutton: React.FC<Props> = ({
     </button>
   );
 };
-export default Dpadbutton;
+export default React.memo(Dpadbutton);

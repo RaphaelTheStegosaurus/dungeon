@@ -1,3 +1,4 @@
+import React from "react";
 import { rectAttribute } from "../types";
 import styles from "./doors.module.css";
 interface Props {
@@ -16,4 +17,4 @@ const Door = ({ attributes }: Props) => {
     ></div>
   );
 };
-export default Door;
+export default React.memo(Door);

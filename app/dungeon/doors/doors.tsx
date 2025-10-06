@@ -1,10 +1,10 @@
+import { memo } from "react";
 import { DoorAttribute, rectAttribute } from "../types";
 import Door from "./door";
-
+import React from "react";
 interface Props {
   doors: DoorAttribute[];
 }
-
 const Doors = ({ doors }: Props) => {
   return (
     <>
@@ -21,4 +21,4 @@ const Doors = ({ doors }: Props) => {
   );
 };
 
-export default Doors;
+export default React.memo(Doors);

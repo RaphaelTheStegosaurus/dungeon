@@ -1,9 +1,10 @@
 interface Props {
   room: "room1" | "room2" | "room3" | "room4";
 }
+import React from "react";
 import Room from "./room";
 import style from "./room.module.css";
-export default function Rooms({ room }: Props) {
+function Rooms({ room }: Props) {
   const roomPosition = {
     room1: "0%",
     room2: "-100%",
@@ -19,3 +20,4 @@ export default function Rooms({ room }: Props) {
     </div>
   );
 }
+export default React.memo(Rooms);

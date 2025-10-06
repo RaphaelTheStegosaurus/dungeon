@@ -10,7 +10,7 @@ interface Props {
   changeIsplayerMovement: (trigger: boolean) => void;
 }
 
-export default function Dpad({
+function Dpad({
   movementFunction,
   actionFunction,
   orientationFunction,
@@ -59,60 +59,6 @@ export default function Dpad({
       >
         ⏴
       </DpadButton>
-
-      {/* <button
-        className={`${styles.dpadButton} ${styles.dpadUp}`}
-        onMouseDown={() => {
-          movementFunction(0, -1);
-          orientationFunction("NORTH");
-          changeIsplayerMovement(true);
-        }}
-        onMouseUp={() => {
-          changeIsplayerMovement(false);
-        }}
-      >
-        ⏶
-      </button>
-      <button
-        className={`${styles.dpadButton} ${styles.dpadRight}`}
-        onMouseDown={() => {
-          movementFunction(1, 0);
-          orientationFunction("EAST");
-          changeIsplayerMovement(true);
-        }}
-        onMouseUp={() => {
-          changeIsplayerMovement(false);
-        }}
-      >
-        ⏵
-      </button>
-      <button
-        className={`${styles.dpadButton} ${styles.dpadDown}`}
-        onMouseDown={() => {
-          movementFunction(0, 1);
-          orientationFunction("SOUTH");
-          changeIsplayerMovement(true);
-        }}
-        onMouseUp={() => {
-          changeIsplayerMovement(false);
-        }}
-      >
-        ⏷
-      </button>
-      <button
-        className={`${styles.dpadButton} ${styles.dpadLeft}`}
-        onMouseDown={() => {
-          movementFunction(-1, 0);
-          orientationFunction("WEST");
-          changeIsplayerMovement(true);
-        }}
-        onMouseUp={() => {
-          changeIsplayerMovement(false);
-        }}
-      >
-        ⏴
-      </button> */}
-
       <button
         className={`${styles.dpadButton} ${styles.dpadSelect}`}
         onClick={() => actionFunction()}
@@ -124,6 +70,6 @@ export default function Dpad({
     </div>
   );
 }
-
+export default React.memo(Dpad);
 // ⬡
 // ⬢
