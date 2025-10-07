@@ -7,7 +7,7 @@ interface Props {
   PlayerAttribute: rectAttribute;
   PlayerOrientation: playerOrientation;
   CurrentRoom: room;
-  HandleNear: (_Id: NPC_Id) => void;
+  HandleNear: (_Id: NPC_Id | -1) => void;
   HandleListOfCoordsByNPC: (_List: rectAttribute[]) => void;
 }
 export default function NPC_Manager({
@@ -89,6 +89,7 @@ export default function NPC_Manager({
         }
       });
     } else {
+      HandleNear(-1);
       ResetListOrientation();
     }
   }, [PlayerAttribute, PlayerOrientation]);

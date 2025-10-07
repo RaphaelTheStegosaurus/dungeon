@@ -81,8 +81,8 @@ export default function Dungeon() {
     setisShowDialogBox(false);
   };
   //[c] NPC Work Area-----------------------------------
-  const [NPCNear, setNPCNear] = useState(0);
-  const HandleIsNearNPC = useCallback((_id: NPC_Id) => {
+  const [NPCNear, setNPCNear] = useState<NPC_Id | -1>(-1);
+  const HandleIsNearNPC = useCallback((_id: NPC_Id | -1) => {
     setNPCNear(_id);
   }, []);
   const [ListOfCoordsOfNPC, setListOfCoordsOfNPC] = useState<rectAttribute[]>(
@@ -180,7 +180,10 @@ export default function Dungeon() {
                 width: playerAttributes.width,
                 height: playerAttributes.height,
               };
-              const newBoundaries = CheckObjectBoundaries(constrainedPlayerRect, Value);
+              const newBoundaries = CheckObjectBoundaries(
+                constrainedPlayerRect,
+                Value
+              );
               constrainedX = newBoundaries.x;
               constrainedY = newBoundaries.y;
             });
@@ -226,11 +229,7 @@ export default function Dungeon() {
         changeIsplayerMovement={setisPlayerMovement}
       />
       {isShowDialogBox ? (
-        <Dialog
-          characterName={DIALOGS[NPCNear].name}
-          text={DIALOGS[NPCNear].text}
-          onClose={closeDialogBox}
-        />
+        <Dialog nearValue={NPCNear} onClose={closeDialogBox} />
       ) : (
         ""
       )}

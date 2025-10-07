@@ -1,15 +1,20 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 interface Props {
-  characterName: string;
-  text: string;
+  nearValue: NPC_Id | -1;
   onClose: () => void;
 }
 import Style from "./dialog.module.css";
-const Dialog = ({ characterName, text, onClose }: Props) => {
+import { NPC_Id } from "../types";
+import { DIALOGS, OUR_DIALOG } from "../lib/npc-data";
+const Dialog = ({ nearValue, onClose }: Props) => {
   const [displayedText, setDisplayedText] = useState("");
-  const words = text.split(" ");
-  const wordCount = text.split(" ").length;
+  const currentDialog = nearValue >= 0 ? DIALOGS[nearValue] : OUR_DIALOG;
+  console.log(nearValue);
+
+  console.log(currentDialog);
+  const words = currentDialog.text.split(" ");
+  const wordCount = currentDialog.text.split(" ").length;
   const textRef = useRef(null);
   useEffect(() => {
     let currentWordIndex = 0;
@@ -29,10 +34,10 @@ const Dialog = ({ characterName, text, onClose }: Props) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [text]);
+  }, [currentDialog.text]);
   return (
     <div className={`${Style.BoxDialog}`}>
-      <h2 className={`${Style.Character}`}>-{characterName}-</h2>
+      <h2 className={`${Style.Character}`}>-{currentDialog.name}-</h2>
       <p ref={textRef} className={`${Style.Text}`}>
         {displayedText}
       </p>
