@@ -42,13 +42,13 @@ export const DIALOGS = [
   },
 ];
 export const NPC_ATRIBUTES = [
+  { width: 50, height: 50, x: 100, y: 200 },
+  { width: 50, height: 50, x: 150, y: 250 },
+  { width: 50, height: 50, x: 200, y: 300 },
+  { width: 50, height: 50, x: 250, y: 350 },
   { width: 50, height: 50, x: 300, y: 400 },
   { width: 50, height: 50, x: 350, y: 450 },
   { width: 50, height: 50, x: 400, y: 500 },
-  { width: 50, height: 50, x: 450, y: 550 },
-  { width: 50, height: 50, x: 500, y: 600 },
-  { width: 50, height: 50, x: 550, y: 650 },
-  { width: 50, height: 50, x: 600, y: 700 },
 ];
 export const NPC_BY_ROOM = {
   room1: [2, 5],

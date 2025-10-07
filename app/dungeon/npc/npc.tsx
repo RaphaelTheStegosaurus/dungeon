@@ -1,10 +1,10 @@
 import { LIST_OF_SPRITES } from "../lib/npc-data";
-import { playerOrientation, rectAttribute } from "../types";
+import { NPC_Id, playerOrientation, rectAttribute } from "../types";
 import style from "./npc.module.css";
 interface Props {
   attributes: rectAttribute;
   orientation: playerOrientation;
-  id: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  id: NPC_Id;
 }
 const NPC = ({ attributes, orientation, id }: Props) => {
   const SpritesConfig = {

@@ -38,6 +38,7 @@ interface Navigation_Room {
 interface Aside_Room_Sets {
   [title: room]: Navigation_Room;
 }
+type NPC_Id = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type {
   rectAttribute,
   playerOrientation,
@@ -51,4 +52,5 @@ export type {
   Sets_of_Doorfaces_by_Room,
   Aside_Room_Sets,
   Navigation_Room,
+  NPC_Id,
 };
