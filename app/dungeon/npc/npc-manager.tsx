@@ -15,7 +15,7 @@ export default function NPC_Manager({
   PlayerOrientation,
   CurrentRoom,
   HandleNear,
-  HandleListOfCoordsByNPC
+  HandleListOfCoordsByNPC,
 }: Props) {
   const ExtractCenterPoint = (_RectAttributes: rectAttribute) => {
     const y = _RectAttributes.y + _RectAttributes.height / 2;
@@ -65,9 +65,13 @@ export default function NPC_Manager({
     const ListLenght = ListOrientationNPC.length;
     setListOrientationNPC(new Array(ListLenght).fill("SOUTH"));
   }, [ListOrientationNPC]);
+  const SendingListOfNPC = useCallback(() => {
+    HandleListOfCoordsByNPC(ListOfNPC);
+  }, [ListOfNPC]);
 
   useEffect(() => {
     NPCManager();
+    SendingListOfNPC();
     if (ListOfNPC.length > 0) {
       ListOfNPC.forEach((Value, Index) => {
         if (CalculatingDistance(PlayerAttribute, Value) < 60) {

@@ -51,7 +51,7 @@ export const NPC_ATRIBUTES = [
   { width: 50, height: 50, x: 400, y: 500 },
 ];
 export const NPC_BY_ROOM = {
-  room1: [2, 5],
+  room1: [2, 5, 0],
   room2: [1, 4],
   room3: [0, 3],
   room4: [6, 2],

@@ -81,24 +81,10 @@ export default function Dungeon() {
     setisShowDialogBox(false);
   };
   //[c] NPC Work Area-----------------------------------
-  const [OtherColision, setOtherColision] = useState<rectAttribute[]>([]);
   const [NPCNear, setNPCNear] = useState(0);
-  const HandleOtherColision = useCallback((_newValues) => {
-    setOtherColision(_newValues);
-  }, []);
   const HandleIsNearNPC = useCallback((_id: NPC_Id) => {
     setNPCNear(_id);
   }, []);
-
-  const [NPCAttribute, setNPCAttribute] = useState<rectAttribute>();
-  const [NPC2, setNPC2] = useState<rectAttribute>();
-  const HandleNPCAttributes = useCallback((_newValues: rectAttribute) => {
-    setNPCAttribute(_newValues);
-  }, []);
-  const HandleNPC2 = useCallback((_newValues: rectAttribute) => {
-    setNPC2(_newValues);
-  }, []);
-  //----------------------------------------------------------------------
   const [ListOfCoordsOfNPC, setListOfCoordsOfNPC] = useState<rectAttribute[]>(
     []
   );
@@ -186,11 +172,18 @@ export default function Dungeon() {
             playerAttributes,
             roomSize ? roomSize : { height: 400, width: 600 }
           );
-          if (NPCAttribute && NPC2) {
-            constrainedX = CheckObjectBoundaries(playerRect, NPCAttribute).x;
-            constrainedY = CheckObjectBoundaries(playerRect, NPCAttribute).y;
-            constrainedX = CheckObjectBoundaries(playerRect, NPC2).x;
-            constrainedY = CheckObjectBoundaries(playerRect, NPC2).y;
+          if (ListOfCoordsOfNPC.length > 0) {
+            ListOfCoordsOfNPC.forEach((Value, Index) => {
+              const constrainedPlayerRect: rectAttribute = {
+                x: constrainedX,
+                y: constrainedY,
+                width: playerAttributes.width,
+                height: playerAttributes.height,
+              };
+              const newBoundaries = CheckObjectBoundaries(constrainedPlayerRect, Value);
+              constrainedX = newBoundaries.x;
+              constrainedY = newBoundaries.y;
+            });
           }
           setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
           setplayerAttributes((prev) => ({
