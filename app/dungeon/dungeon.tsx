@@ -80,18 +80,22 @@ export default function Dungeon() {
     setisShowDialogBox(false);
   };
   //[c] NPC Work Area-----------------------------------
+  const [OtherColision, setOtherColision] = useState<rectAttribute[]>([]);
   const [NPCNear, setNPCNear] = useState(0);
+  const HandleOtherColision = useCallback((_newValues) => {
+    setOtherColision(_newValues);
+  }, []);
+  const HandleIsNearNPC = useCallback((_id: 0 | 1 | 2 | 3 | 4 | 5 | 6) => {
+    setNPCNear(_id);
+  }, []);
+
   const [NPCAttribute, setNPCAttribute] = useState<rectAttribute>();
   const [NPC2, setNPC2] = useState<rectAttribute>();
-  
   const HandleNPCAttributes = useCallback((_newValues: rectAttribute) => {
     setNPCAttribute(_newValues);
   }, []);
   const HandleNPC2 = useCallback((_newValues: rectAttribute) => {
     setNPC2(_newValues);
-  }, []);
-  const HandleIsNearNPC = useCallback((_id: number) => {
-    setNPCNear(_id);
   }, []);
   //-------------------------------------------------------
   //[c] React Functions

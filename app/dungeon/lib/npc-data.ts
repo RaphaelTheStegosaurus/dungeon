@@ -41,12 +41,28 @@ export const DIALOGS = [
     text: "Soy tu primer NPC y estas Hablando conmigo que alegría",
   },
 ];
-const NPC_ATRIBUTES = {
-  npc01: {},
-  npc02: {},
-  npc03: {},
-  npc04: {},
-  npc05: {},
-  npc06: {},
-  npc07: {},
+export const NPC_ATRIBUTES = [
+  { width: 50, height: 50, x: 300, y: 400 },
+  { width: 50, height: 50, x: 350, y: 450 },
+  { width: 50, height: 50, x: 400, y: 500 },
+  { width: 50, height: 50, x: 450, y: 550 },
+  { width: 50, height: 50, x: 500, y: 600 },
+  { width: 50, height: 50, x: 550, y: 650 },
+  { width: 50, height: 50, x: 600, y: 700 },
+];
+export const NPC_BY_ROOM = {
+  room1: [2, 5],
+  room2: [1, 4],
+  room3: [0, 3],
+  room4: [6, 2],
 };
+
+export const LIST_OF_SPRITES = [
+  "/npc/npc-01-idle.png",
+  "/npc/npc-02-idle.png",
+  "/npc/npc-03-idle.png",
+  "/npc/npc-04-idle.png",
+  "/npc/npc-05-idle.png",
+  "/npc/npc-06-idle.png",
+  "/npc/npc-07-idle.png",
+];

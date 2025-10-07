@@ -1,14 +1,15 @@
 "use client";
 import { playerOrientation, rectAttribute, room } from "../types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import NPC from "./npc";
+import { NPC_ATRIBUTES, NPC_BY_ROOM } from "../lib/npc-data";
 interface Props {
   PlayerAttribute: rectAttribute;
   PlayerOrientation: playerOrientation;
   CurrentRoom: room;
   HandleCoords: (_Attributes: rectAttribute) => void;
   HandleCoordsNPC2: (_Attributes: rectAttribute) => void;
-  HandleNear: (_Id: number) => void;
+  HandleNear: (_Id: 0 | 1 | 2 | 3 | 4 | 5 | 6) => void;
 }
 export default function NPC_Manager({
   PlayerAttribute,
@@ -64,7 +65,25 @@ export default function NPC_Manager({
     const newOrientation = NPCOrientationToPlayer[PlayerOrientation];
     return newOrientation as playerOrientation;
   };
+  ///WORKING AREA
+  const [ListOfNPC, setListOfNPC] = useState<rectAttribute[]>([]);
+  const [ListOrientationNPC, setListOrientationNPC] = useState<
+    playerOrientation[]
+  >([]);
+  const NPCManager = useCallback(() => {
+    const currentNPC = NPC_BY_ROOM[CurrentRoom];
+    let ListRectOfNPC = currentNPC.map((Value) => {
+      return NPC_ATRIBUTES[Value];
+    });
+    setListOfNPC(ListRectOfNPC);
+    let ListOrientationOfNPC: playerOrientation[] = new Array(
+      currentNPC.length
+    ).fill("SOUTH");
+    setListOrientationNPC(ListOrientationOfNPC);
+  }, [ListOfNPC, ListOrientationNPC]);
+  ///WORKING AREA
   useEffect(() => {
+    NPCManager();
     if (CalculatingDistance(PlayerAttribute, rectAttribute) < 60) {
       HandleNear(5);
       setCurrentOrientation(SetChangeOrientation());
@@ -81,6 +100,7 @@ export default function NPC_Manager({
     HandleCoords(rectAttribute);
     HandleCoordsNPC2(rectNPC2);
   }, [rectAttribute, rectNPC2]);
+
   return (
     <>
       <NPC id={5} attributes={rectAttribute} orientation={CurrentOrientation} />

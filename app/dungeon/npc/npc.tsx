@@ -1,3 +1,4 @@
+import { LIST_OF_SPRITES } from "../lib/npc-data";
 import { playerOrientation, rectAttribute } from "../types";
 import style from "./npc.module.css";
 interface Props {
@@ -6,16 +7,6 @@ interface Props {
   id: 0 | 1 | 2 | 3 | 4 | 5 | 6;
 }
 const NPC = ({ attributes, orientation, id }: Props) => {
-  const TemporalUrl = "/npc/npc-06-idle.png";
-  const LIST_OF_SPRITES = [
-    "/npc/npc-01-idle.png",
-    "/npc/npc-02-idle.png",
-    "/npc/npc-03-idle.png",
-    "/npc/npc-04-idle.png",
-    "/npc/npc-05-idle.png",
-    "/npc/npc-06-idle.png",
-    "/npc/npc-07-idle.png",
-  ];
   const SpritesConfig = {
     NORTH: "50% 0%",
     SOUTH: "0% 0%",
