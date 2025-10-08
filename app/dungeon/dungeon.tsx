@@ -66,7 +66,7 @@ export default function Dungeon() {
 
   const [roomSize, setroomSize] = useState<Sizes | null>(null);
   const [isShowDialogBox, setisShowDialogBox] = useState(false);
-  //[c] functions
+  //[c] Functions Setter States
   const setCoordsDirection = useCallback((xCoord: number, yCoord: number) => {
     setDirectionPlayer({ x: xCoord, y: yCoord });
   }, []);
@@ -80,6 +80,7 @@ export default function Dungeon() {
   const closeDialogBox = () => {
     setisShowDialogBox(false);
   };
+  //[c] Functions
   const GetDoorRePosition = (_Doors: DoorAttribute[], _RoomSize: Sizes) => {
     const newDoors = _Doors.map((door, index) => {
       const newFace: DoorFace = SETS_OF_FACES_BY_ROOM[currentRoom][index];
@@ -94,6 +95,100 @@ export default function Dungeon() {
     });
     return newDoors;
   };
+  const handleResize = () => {
+    if (DUNGEON_REF.current) {
+      const RoomRect = DUNGEON_REF.current.getBoundingClientRect();
+      const SizeRoom = { width: RoomRect.width, height: RoomRect.height };
+      setroomSize(SizeRoom);
+    }
+  };
+  const calculateResetY = (
+    enteredDoorFace: DoorFace,
+    roomSize: Sizes | null,
+    playerAttributes: rectAttribute
+  ) => {
+    const DEFAULT_Y = 100;
+    if (!roomSize) return DEFAULT_Y;
+    if (enteredDoorFace === "door-face-top") {
+      return (
+        roomSize.height -
+        ((DOOR_SAMPLE.height + WALLS_WIDTH) * 2 + playerAttributes.height)
+      );
+    } else if (enteredDoorFace === "door-face-bottom") {
+      return (DOOR_SAMPLE.height + WALLS_WIDTH) * 2;
+    } else {
+      return roomSize.height / 2;
+    }
+  };
+  const handleRoomChange = useCallback(
+    (
+      enteredDoorFace: DoorFace,
+      currentRoom: room,
+      roomSize: Sizes | null,
+      playerAttributes: rectAttribute,
+      getCurrentX: number
+    ) => {
+      setisPlayerMovement(false);
+      const nextRoom = changeRoom(enteredDoorFace, currentRoom) as room;
+      const resetY = calculateResetY(
+        enteredDoorFace,
+        roomSize,
+        playerAttributes
+      );
+      setcurrentRoom(nextRoom);
+      setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
+      setplayerAttributes((prev) => ({
+        ...prev,
+        x: getCurrentX,
+        y: resetY,
+      }));
+    },
+    [
+      setisPlayerMovement,
+      setcurrentRoom,
+      setplayerSpritePosition,
+      setplayerAttributes,
+    ]
+  );
+  const handleRegularMovement = useCallback(
+    (
+      getCurrentX: number,
+      getCurrentY: number,
+      playerAttributes: rectAttribute,
+      roomSize: Sizes | null,
+      ListOfCoordsOfNPC: rectAttribute[]
+    ) => {
+      let { x: constrainedX, y: constrainedY } = checkBoundaries(
+        getCurrentX,
+        getCurrentY,
+        playerAttributes,
+        roomSize ? roomSize : { height: 400, width: 600 }
+      );
+      if (ListOfCoordsOfNPC.length > 0) {
+        ListOfCoordsOfNPC.forEach((npcCoords) => {
+          const constrainedPlayerRect: rectAttribute = {
+            x: constrainedX,
+            y: constrainedY,
+            width: playerAttributes.width,
+            height: playerAttributes.height,
+          };
+          const newBoundaries = CheckObjectBoundaries(
+            constrainedPlayerRect,
+            npcCoords
+          );
+          constrainedX = newBoundaries.x;
+          constrainedY = newBoundaries.y;
+        });
+      }
+      setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
+      setplayerAttributes((prev) => ({
+        ...prev,
+        x: constrainedX,
+        y: constrainedY,
+      }));
+    },
+    [setplayerSpritePosition, setplayerAttributes]
+  );
   //[c] NPC Work Area-----------------------------------
   const [NPCNear, setNPCNear] = useState<NPC_Id | -1>(-1);
   const HandleIsNearNPC = useCallback((_id: NPC_Id | -1) => {
@@ -108,21 +203,14 @@ export default function Dungeon() {
   //-------------------------------------------------------
   //[c] React Functions
 
-  const handleResize = () => {
-    if (DUNGEON_REF.current) {
-      const RoomRect = DUNGEON_REF.current.getBoundingClientRect();
-      const SizeRoom = { width: RoomRect.width, height: RoomRect.height };
-      setroomSize(SizeRoom);
-    }
-  };
+  useLayoutEffect(() => {
+    handleResize();
+  }, []);
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
-  useLayoutEffect(() => {
-    handleResize();
   }, []);
   useEffect(() => {
     if (roomSize) {
@@ -138,7 +226,6 @@ export default function Dungeon() {
       playerInterval = setInterval(() => {
         getCurrentX += DirectionPlayer.x * PLAYER_VELOCITY;
         getCurrentY += DirectionPlayer.y * PLAYER_VELOCITY;
-
         const playerRect: rectAttribute = {
           x: getCurrentX,
           y: getCurrentY,
@@ -146,65 +233,22 @@ export default function Dungeon() {
           height: playerAttributes.height,
         };
         const enteredDoor = checkIfPlayerEnteringTheDoor(playerRect, doors);
-
         if (enteredDoor) {
-          setisPlayerMovement(false);
-          let nextRoom = changeRoom(enteredDoor.face, currentRoom) as room;
-          let resetY;
-          if (enteredDoor.face === "door-face-top") {
-            if (roomSize) {
-              resetY =
-                roomSize.height -
-                ((DOOR_SAMPLE.height + WALLS_WIDTH) * 2 +
-                  playerAttributes.height);
-            } else {
-              resetY = 100;
-            }
-          } else if (enteredDoor.face === "door-face-bottom") {
-            resetY = (DOOR_SAMPLE.height + WALLS_WIDTH) * 2;
-          } else {
-            if (roomSize) {
-              resetY = roomSize.height / 2;
-            } else {
-              resetY = 100;
-            }
-          }
-          setcurrentRoom(nextRoom);
-          setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
-          setplayerAttributes((prev) => ({
-            ...prev,
-            x: getCurrentX,
-            y: resetY,
-          }));
+          handleRoomChange(
+            enteredDoor.face,
+            currentRoom,
+            roomSize,
+            playerAttributes,
+            getCurrentX
+          );
         } else {
-          let { x: constrainedX, y: constrainedY } = checkBoundaries(
+          handleRegularMovement(
             getCurrentX,
             getCurrentY,
             playerAttributes,
-            roomSize ? roomSize : { height: 400, width: 600 }
+            roomSize,
+            ListOfCoordsOfNPC
           );
-          if (ListOfCoordsOfNPC.length > 0) {
-            ListOfCoordsOfNPC.forEach((Value, Index) => {
-              const constrainedPlayerRect: rectAttribute = {
-                x: constrainedX,
-                y: constrainedY,
-                width: playerAttributes.width,
-                height: playerAttributes.height,
-              };
-              const newBoundaries = CheckObjectBoundaries(
-                constrainedPlayerRect,
-                Value
-              );
-              constrainedX = newBoundaries.x;
-              constrainedY = newBoundaries.y;
-            });
-          }
-          setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
-          setplayerAttributes((prev) => ({
-            ...prev,
-            x: constrainedX,
-            y: constrainedY,
-          }));
         }
       }, 100);
     }
@@ -213,7 +257,17 @@ export default function Dungeon() {
         clearInterval(playerInterval);
       }
     };
-  }, [isPlayerMovement, DirectionPlayer, playerAttributes, roomSize]);
+  }, [
+    isPlayerMovement,
+    DirectionPlayer,
+    playerAttributes,
+    roomSize,
+    doors,
+    currentRoom,
+    ListOfCoordsOfNPC,
+    handleRoomChange,
+    handleRegularMovement,
+  ]);
 
   // [c] Render
   return (
