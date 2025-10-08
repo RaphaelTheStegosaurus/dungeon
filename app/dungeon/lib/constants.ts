@@ -5,7 +5,7 @@ import {
   Sets_of_Doorfaces_by_Room,
 } from "../types";
 
-export const PLAYER_VELOCITY = 20;
+export const PLAYER_VELOCITY = 3;
 export const WALLS_WIDTH = 20;
 export const DOOR_SAMPLE: rectAttribute = {
   x: 0,
@@ -39,3 +39,4 @@ export const ASIDE_ROOMS: Aside_Room_Sets = {
     next: undefined,
   },
 };
+export const SPRITE_FRAME_DELAY = 6;

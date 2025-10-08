@@ -27,6 +27,7 @@ import {
   WALLS_WIDTH,
   DOOR_SAMPLE,
   SETS_OF_FACES_BY_ROOM,
+  SPRITE_FRAME_DELAY,
 } from "./lib/constants";
 import {
   checkIfPlayerEnteringTheDoor,
@@ -41,9 +42,12 @@ import Dialog from "./dialog/dialog";
 import NPC_Manager from "./npc/npc-manager";
 import { DIALOGS } from "./lib/npc-data";
 export default function Dungeon() {
-  //[c] React Variables
+  //[c] Refs
   const PLAYER_REF = useRef<HTMLDivElement>(null);
   const DUNGEON_REF = useRef<HTMLDivElement>(null);
+  const SPRITE_FRAME_COUNT_REF = useRef(0);
+  const REQUEST_REF = useRef<number | null>(null);
+  // [c] States
   const [playerAttributes, setplayerAttributes] = useState<rectAttribute>({
     x: 50,
     y: 20,
@@ -66,6 +70,13 @@ export default function Dungeon() {
 
   const [roomSize, setroomSize] = useState<Sizes | null>(null);
   const [isShowDialogBox, setisShowDialogBox] = useState(false);
+  const [NPCNear, setNPCNear] = useState<NPC_Id | -1>(-1);
+  const HandleIsNearNPC = useCallback((_id: NPC_Id | -1) => {
+    setNPCNear(_id);
+  }, []);
+  const [ListOfCoordsOfNPC, setListOfCoordsOfNPC] = useState<rectAttribute[]>(
+    []
+  );
   //[c] Functions Setter States
   const setCoordsDirection = useCallback((xCoord: number, yCoord: number) => {
     setDirectionPlayer({ x: xCoord, y: yCoord });
@@ -80,6 +91,9 @@ export default function Dungeon() {
   const closeDialogBox = () => {
     setisShowDialogBox(false);
   };
+  const setterOfListOfCoordsByNPC = useCallback((List: rectAttribute[]) => {
+    setListOfCoordsOfNPC(List);
+  }, []);
   //[c] Functions
   const GetDoorRePosition = (_Doors: DoorAttribute[], _RoomSize: Sizes) => {
     const newDoors = _Doors.map((door, index) => {
@@ -180,7 +194,11 @@ export default function Dungeon() {
           constrainedY = newBoundaries.y;
         });
       }
-      setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
+      SPRITE_FRAME_COUNT_REF.current += 1;
+      if (SPRITE_FRAME_COUNT_REF.current >= SPRITE_FRAME_DELAY) {
+        setplayerSpritePosition((prev) => (prev === 0 ? 1 : 0));
+        SPRITE_FRAME_COUNT_REF.current = 0;
+      }
       setplayerAttributes((prev) => ({
         ...prev,
         x: constrainedX,
@@ -189,20 +207,50 @@ export default function Dungeon() {
     },
     [setplayerSpritePosition, setplayerAttributes]
   );
-  //[c] NPC Work Area-----------------------------------
-  const [NPCNear, setNPCNear] = useState<NPC_Id | -1>(-1);
-  const HandleIsNearNPC = useCallback((_id: NPC_Id | -1) => {
-    setNPCNear(_id);
-  }, []);
-  const [ListOfCoordsOfNPC, setListOfCoordsOfNPC] = useState<rectAttribute[]>(
-    []
-  );
-  const setterOfListOfCoordsByNPC = useCallback((List: rectAttribute[]) => {
-    setListOfCoordsOfNPC(List);
-  }, []);
-  //-------------------------------------------------------
-  //[c] React Functions
 
+  const gameLoop = useCallback(() => {
+    const newX = playerAttributes.x + DirectionPlayer.x * PLAYER_VELOCITY;
+    const newY = playerAttributes.y + DirectionPlayer.y * PLAYER_VELOCITY;
+    const playerRect = {
+      x: newX,
+      y: newY,
+      width: playerAttributes.width,
+      height: playerAttributes.height,
+    };
+    const enteredDoor = checkIfPlayerEnteringTheDoor(playerRect, doors);
+    if (enteredDoor) {
+      handleRoomChange(
+        enteredDoor.face,
+        currentRoom,
+        roomSize,
+        playerAttributes,
+        newX
+      );
+    } else {
+      handleRegularMovement(
+        newX,
+        newY,
+        playerAttributes,
+        roomSize,
+        ListOfCoordsOfNPC
+      );
+      if (isPlayerMovement) {
+        REQUEST_REF.current = requestAnimationFrame(gameLoop);
+      }
+    }
+  }, [
+    isPlayerMovement,
+    DirectionPlayer,
+    playerAttributes,
+    roomSize,
+    doors,
+    currentRoom,
+    ListOfCoordsOfNPC,
+    handleRoomChange,
+    handleRegularMovement,
+  ]);
+
+  //[c] useEffects and useLayoutEffects
   useLayoutEffect(() => {
     handleResize();
   }, []);
@@ -219,55 +267,18 @@ export default function Dungeon() {
   }, [roomSize, currentRoom]);
 
   useEffect(() => {
-    let playerInterval: NodeJS.Timeout;
     if (isPlayerMovement) {
-      let getCurrentX = playerAttributes.x;
-      let getCurrentY = playerAttributes.y;
-      playerInterval = setInterval(() => {
-        getCurrentX += DirectionPlayer.x * PLAYER_VELOCITY;
-        getCurrentY += DirectionPlayer.y * PLAYER_VELOCITY;
-        const playerRect: rectAttribute = {
-          x: getCurrentX,
-          y: getCurrentY,
-          width: playerAttributes.width,
-          height: playerAttributes.height,
-        };
-        const enteredDoor = checkIfPlayerEnteringTheDoor(playerRect, doors);
-        if (enteredDoor) {
-          handleRoomChange(
-            enteredDoor.face,
-            currentRoom,
-            roomSize,
-            playerAttributes,
-            getCurrentX
-          );
-        } else {
-          handleRegularMovement(
-            getCurrentX,
-            getCurrentY,
-            playerAttributes,
-            roomSize,
-            ListOfCoordsOfNPC
-          );
-        }
-      }, 100);
+      REQUEST_REF.current = requestAnimationFrame(gameLoop);
+    } else if (REQUEST_REF.current != null) {
+      cancelAnimationFrame(REQUEST_REF.current);
+      REQUEST_REF.current = null;
     }
     return () => {
-      if (playerInterval) {
-        clearInterval(playerInterval);
+      if (REQUEST_REF.current) {
+        cancelAnimationFrame(REQUEST_REF.current);
       }
     };
-  }, [
-    isPlayerMovement,
-    DirectionPlayer,
-    playerAttributes,
-    roomSize,
-    doors,
-    currentRoom,
-    ListOfCoordsOfNPC,
-    handleRoomChange,
-    handleRegularMovement,
-  ]);
+  }, [isPlayerMovement, gameLoop]);
 
   // [c] Render
   return (

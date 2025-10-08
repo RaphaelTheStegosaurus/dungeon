@@ -2,5 +2,5 @@
     position: absolute;
     background-repeat: no-repeat;
     z-index: 5;
-    transition: inset linear 0.1s;
+    /* transition: inset linear 0.01s; */
 }
