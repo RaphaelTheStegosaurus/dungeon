@@ -10,9 +10,6 @@ import { DIALOGS, OUR_DIALOG } from "../lib/npc-data";
 const Dialog = ({ nearValue, onClose }: Props) => {
   const [displayedText, setDisplayedText] = useState("");
   const currentDialog = nearValue >= 0 ? DIALOGS[nearValue] : OUR_DIALOG;
-  console.log(nearValue);
-
-  console.log(currentDialog);
   const words = currentDialog.text.split(" ");
   const wordCount = currentDialog.text.split(" ").length;
   const textRef = useRef(null);
@@ -31,7 +28,7 @@ const Dialog = ({ nearValue, onClose }: Props) => {
       } else {
         clearInterval(interval);
       }
-    }, 100);
+    }, 200);
 
     return () => clearInterval(interval);
   }, [currentDialog.text]);

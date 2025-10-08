@@ -44,9 +44,8 @@
 .Text {
     height: 100px;
     white-space: pre-wrap;
-    transition: all ease 0.5;
+    transition: all ease 0.2s;
     overflow-y: scroll;
-
     &::-webkit-scrollbar {
         background: transparent;
     }

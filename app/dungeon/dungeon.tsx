@@ -80,6 +80,20 @@ export default function Dungeon() {
   const closeDialogBox = () => {
     setisShowDialogBox(false);
   };
+  const GetDoorRePosition = (_Doors: DoorAttribute[], _RoomSize: Sizes) => {
+    const newDoors = _Doors.map((door, index) => {
+      const newFace: DoorFace = SETS_OF_FACES_BY_ROOM[currentRoom][index];
+      const newY: number = returnDoorPositionY(newFace, _RoomSize);
+      const newX: number = _RoomSize.width / 2 - door.width / 2;
+      return {
+        ...door,
+        face: newFace,
+        y: newY,
+        x: newX,
+      };
+    });
+    return newDoors;
+  };
   //[c] NPC Work Area-----------------------------------
   const [NPCNear, setNPCNear] = useState<NPC_Id | -1>(-1);
   const HandleIsNearNPC = useCallback((_id: NPC_Id | -1) => {
@@ -93,29 +107,26 @@ export default function Dungeon() {
   }, []);
   //-------------------------------------------------------
   //[c] React Functions
-  useLayoutEffect(() => {
+
+  const handleResize = () => {
     if (DUNGEON_REF.current) {
       const RoomRect = DUNGEON_REF.current.getBoundingClientRect();
-      setroomSize({ width: RoomRect.width, height: RoomRect.height });
+      const SizeRoom = { width: RoomRect.width, height: RoomRect.height };
+      setroomSize(SizeRoom);
     }
+  };
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
-
+  useLayoutEffect(() => {
+    handleResize();
+  }, []);
   useEffect(() => {
     if (roomSize) {
-      setdoors((prevDoors) => {
-        const newDoors = prevDoors.map((door, index) => {
-          const newFace: DoorFace = SETS_OF_FACES_BY_ROOM[currentRoom][index];
-          const newY: number = returnDoorPositionY(newFace, roomSize);
-          const newX: number = roomSize.width / 2 - door.width / 2;
-          return {
-            ...door,
-            face: newFace,
-            y: newY,
-            x: newX,
-          };
-        });
-        return newDoors;
-      });
+      setdoors((prevDoors) => GetDoorRePosition(prevDoors, roomSize));
     }
   }, [roomSize, currentRoom]);
 
