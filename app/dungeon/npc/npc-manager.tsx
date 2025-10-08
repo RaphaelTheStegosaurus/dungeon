@@ -49,53 +49,57 @@ export default function NPC_Manager({
   const [ListOrientationNPC, setListOrientationNPC] = useState<
     playerOrientation[]
   >([]);
-  const NPCManager = useCallback(() => {
-    const currentNPC = NPC_BY_ROOM[CurrentRoom] as NPC_Id[];
-    let ListRectOfNPC = currentNPC.map((Value) => {
-      return NPC_ATRIBUTES[Value];
-    });
-    setListOfNPCId(currentNPC);
-    setListOfNPC(ListRectOfNPC);
-    let ListOrientationOfNPC: playerOrientation[] = new Array(
-      currentNPC.length
-    ).fill("SOUTH");
-    setListOrientationNPC(ListOrientationOfNPC);
-  }, [ListOfNPC, ListOrientationNPC]);
+
+  const NPCManager = (room: room) => {
+    const currentNPC = NPC_BY_ROOM[room] as NPC_Id[];
+    const ListRectOfNPC = currentNPC.map((Value) => NPC_ATRIBUTES[Value]);
+    return {
+      npcIds: currentNPC,
+      npcRects: ListRectOfNPC,
+    };
+  };
+
   const ResetListOrientation = useCallback(() => {
     const ListLenght = ListOrientationNPC.length;
     setListOrientationNPC(new Array(ListLenght).fill("SOUTH"));
+    HandleNear(-1);
   }, [ListOrientationNPC]);
   const SendingListOfNPC = useCallback(() => {
     HandleListOfCoordsByNPC(ListOfNPC);
   }, [ListOfNPC]);
 
   useEffect(() => {
-    NPCManager();
-    SendingListOfNPC();
+    const { npcIds, npcRects } = NPCManager(CurrentRoom);
+    setListOfNPCId(npcIds);
+    setListOfNPC(npcRects);
+    const initialOrientations: playerOrientation[] = new Array(
+      npcIds.length
+    ).fill("SOUTH");
+    setListOrientationNPC(initialOrientations);
+    HandleListOfCoordsByNPC(npcRects);
+    HandleNear(-1);
+  }, [CurrentRoom, HandleListOfCoordsByNPC, HandleNear]);
+
+  useEffect(() => {
+    let nearestNPCId: NPC_Id | -1 = -1;
     if (ListOfNPC.length > 0) {
-      ListOfNPC.forEach((Value, Index) => {
-        if (CalculatingDistance(PlayerAttribute, Value) < 60) {
-          HandleNear(ListOfNPCId[Index]);
-          const NewListOfOrientation = ListOrientationNPC.map(
-            (_Value, _Index) => {
-              if (Index === _Index) {
-                return SetChangeOrientation(PlayerOrientation);
-              } else {
-                return _Value;
-              }
-            }
-          );
-          setListOrientationNPC(NewListOfOrientation);
-        }
+      setListOrientationNPC((prevListOrientation) => {
+        let newOrientationList = [...prevListOrientation];
+        ListOfNPC.forEach((npcAttributes, Index) => {
+          const distance = CalculatingDistance(PlayerAttribute, npcAttributes);
+          const npcId = ListOfNPCId[Index];
+          if (distance < 60) {
+            nearestNPCId = npcId;
+            newOrientationList[Index] = SetChangeOrientation(PlayerOrientation);
+          } else {
+            newOrientationList[Index] = "SOUTH";
+          }
+        });
+        return newOrientationList;
       });
-    } else {
-      HandleNear(-1);
-      ResetListOrientation();
     }
-  }, [PlayerAttribute, PlayerOrientation]);
-  useLayoutEffect(() => {
-    NPCManager();
-  }, []);
+    HandleNear(nearestNPCId);
+  }, [PlayerAttribute, PlayerOrientation, ListOfNPC, ListOfNPCId, HandleNear]);
 
   return (
     <>
