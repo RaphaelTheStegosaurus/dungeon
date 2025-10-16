@@ -262,13 +262,15 @@ me quieren dar las nachas`,
   },
 ];
 export const OUR_DIALOG = {
-  name:"Rafael Alberto Serrato Morales",
-  text:`Hola Soy Alberto 
-  soy el desarrollador de esta pagina 
-  actualmente esto construyendo este sitio para mi portafolio personal
-  Est lleva mucho trabajo 
-  y Apreciaría un apoyo`
-}
+  name: "Rafael Alberto Serrato Morales",
+  text: `
+  Hi, I'm Alberto.
+  I'm the developer of this page.
+  I'm currently building this site for my personal portfolio.
+  It's a lot of work.
+  I'd appreciate some support.
+  `,
+};
 export const NPC_ATRIBUTES = [
   { width: 50, height: 50, x: 100, y: 200 },
   { width: 50, height: 50, x: 150, y: 250 },

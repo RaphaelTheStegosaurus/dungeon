@@ -7,9 +7,10 @@ interface Props {
 import Style from "./dialog.module.css";
 import { NPC_Id } from "../types";
 import { DIALOGS, OUR_DIALOG } from "../lib/npc-data";
+import { SAMPLE_DIALOGS } from "../lib/dialogs";
 const Dialog = ({ nearValue, onClose }: Props) => {
   const [displayedText, setDisplayedText] = useState("");
-  const currentDialog = nearValue >= 0 ? DIALOGS[nearValue] : OUR_DIALOG;
+  const currentDialog = nearValue >= 0 ? SAMPLE_DIALOGS[nearValue] : OUR_DIALOG;
   const words = currentDialog.text.split(" ");
   const wordCount = currentDialog.text.split(" ").length;
   const textRef = useRef(null);
